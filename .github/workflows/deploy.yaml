@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+env:
+  AWS_REGION: ap-southeast-2
+  ECR_REGISTRY: 950177940921.dkr.ecr.ap-southeast-2.amazonaws.com
+  ECR_REPOSITORY: idea-support-server
+
 jobs:
   build_and_push:
     name: Build and Push Docker Image
@@ -23,9 +28,17 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Build and Push Image with Jib
         env:
-          REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
-          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-          CONTAINER_IMAGE: docker-repo.minq.work/idea-support-server:latest
-        run: ./gradlew jib -PprojectDataImageTargetEnv=prod
+          REGISTRY_USER: AWS
+          CONTAINER_IMAGE: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+        run: |
+          export REGISTRY_PASSWORD=$(aws ecr get-login-password --region $AWS_REGION)
+          ./gradlew jib -PprojectDataImageTargetEnv=prod
