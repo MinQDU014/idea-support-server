@@ -30,7 +30,7 @@ class GuideApiTest : MySqlApiTestSupport() {
 			201,
 		)["idea"]["id"].asText()
 
-	@TestFactory fun `each default category generates an appropriate reusable guide`() =
+	@TestFactory fun `기본 카테고리마다 알맞은 재사용 가이드를 생성한다`() =
 		defaults.map { (name, kind, label) ->
 			dynamicTest(name) {
 				val (token, _) = member()
@@ -52,7 +52,7 @@ class GuideApiTest : MySqlApiTestSupport() {
 			}
 		}
 
-	@TestFactory fun `custom categories persist an explicit guide type`() =
+	@TestFactory fun `사용자 카테고리는 명시한 가이드 유형을 저장한다`() =
 		listOf("food", "software", "contest", "general").map { kind ->
 			dynamicTest(kind) {
 				val (token, _) = member()
@@ -73,19 +73,19 @@ class GuideApiTest : MySqlApiTestSupport() {
 			}
 		}
 
-	@Test fun `a custom category without a type receives an execution plan`() {
+	@Test fun `유형이 없는 사용자 카테고리는 실행 계획을 받는다`() {
 		val (token, _) = member()
 		val custom = request("POST", "/app/categories", mapOf("name" to "캠핑 요리 ${UUID.randomUUID()}"), token, 201)["category"]
 		assertEquals("general", custom["guideType"].asText())
 		assertEquals("실행 계획", custom["guideLabel"].asText())
 	}
 
-	@Test fun `unknown custom guide types are rejected`() {
+	@Test fun `알 수 없는 가이드 유형은 거부된다`() {
 		val (token, _) = member()
 		request("POST", "/app/categories", mapOf("name" to "캠핑 요리", "guideType" to "unknown"), token, 400)
 	}
 
-	@Test fun `legacy recipe route also supports program guides`() {
+	@Test fun `예전 레시피 경로도 프로그램 가이드를 지원한다`() {
 		val (token, _) = member()
 		val category = categories.findAll().first { it.name == "프로그램 개발" }
 		val id = createIdea(category.id, token)

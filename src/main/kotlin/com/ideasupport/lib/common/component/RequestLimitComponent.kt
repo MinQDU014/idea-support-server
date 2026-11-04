@@ -3,7 +3,7 @@ import org.springframework.stereotype.Component
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
-import java.time.Instant
+import java.time.Clock
 import com.ideasupport.lib.common.enum.INTERNAL_ERROR_CODE
 import com.ideasupport.lib.common.exception.ServerErrorException
 
@@ -13,6 +13,8 @@ class RequestLimitComponent(
 	@Value("\${app.limits.recipe:5}") private val recipeLimit: Int,
 	@Value("\${app.limits.preview:20}") private val previewLimit: Int,
 	@Value("\${app.limits.category:10}") private val categoryLimit: Int,
+	// 시간이 흐르는 상황을 테스트에서 만들 수 있도록 시계를 바꿔 끼울 수 있게 한다. 운영에서는 시스템 시계를 쓴다.
+	private val clock: Clock = Clock.systemUTC(),
 ) {
 	private data class Window(val expires: Long, var count: Int)
 
@@ -33,7 +35,7 @@ class RequestLimitComponent(
 		val ip = (RequestContextHolder.getRequestAttributes() as? ServletRequestAttributes)?.request?.remoteAddr ?: "background"
 		// 프록시 헤더는 신뢰 프록시를 설정하기 전까지 사용하지 않는다.
 		synchronized(windows) {
-			val now = Instant.now().epochSecond
+			val now = clock.instant().epochSecond
 			windows.entries.removeIf { it.value.expires <= now }
 			if (windows.size > 10000) throw ServerErrorException(INTERNAL_ERROR_CODE.RATE_LIMITED)
 			val keys = listOf("$action:user:$userIdx" to limit, "$action:ip:$ip" to limit * 3)

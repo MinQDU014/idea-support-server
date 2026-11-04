@@ -18,7 +18,7 @@ class UserControllerSpec {
 
 	@Autowired lateinit var mapper: ObjectMapper
 
-	@Test fun `own profile uses existing login tokens and ordinary user role`() {
+	@Test fun `내 프로필은 기존 로그인 토큰을 쓰고 일반 사용자 역할을 가진다`() {
 		val id = UUID.randomUUID().toString()
 		val body =
 			mapper.writeValueAsBytes(

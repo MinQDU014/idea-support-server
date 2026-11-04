@@ -8,7 +8,12 @@ import com.ideasupport.lib.common.exception.ServerErrorException
 
 @Component
 class ContentPolicyComponent {
-	fun normalize(value: String): String = Normalizer.normalize(value, Normalizer.Form.NFKC).trim().replace(Regex("\\s+"), " ")
+	// 호환 문자를 통일하고, 눈에 보이지 않는 서식 문자(폭 없는 공백 등)를 지운 뒤 공백을 하나로 줄인다.
+	fun normalize(value: String): String =
+		Normalizer.normalize(value, Normalizer.Form.NFKC)
+			.replace(INVISIBLE_CHARACTERS, "")
+			.trim()
+			.replace(WHITESPACE_RUN, " ")
 
 	fun key(value: String): String = normalize(value).lowercase(Locale.ROOT).replace(" ", "")
 
@@ -18,17 +23,22 @@ class ContentPolicyComponent {
 		}
 
 	fun check(value: String) {
-		if (listOf(
-				"아동 성착취",
-				"폭탄 제조",
-				"자살 방법",
-			).any { key(value).contains(key(it)) }
-		) {
+		val key = key(value)
+		if (UNSAFE_PHRASE_KEYS.any { key.contains(it) }) {
 			throw ServerErrorException(INTERNAL_ERROR_CODE.UNSAFE_CONTENT)
 		}
 	}
 
 	fun requireInput(condition: Boolean) {
 		if (!condition) throw ServerErrorException(INTERNAL_ERROR_CODE.INVALID_INPUT)
+	}
+
+	private companion object {
+		val INVISIBLE_CHARACTERS = Regex("\\p{Cf}")
+		val WHITESPACE_RUN = Regex("\\s+")
+		val UNSAFE_PHRASES = listOf("폭탄 제조", "자살 방법")
+
+		// 위험 문구도 입력과 같은 방식으로 정규화해서 비교한다.
+		val UNSAFE_PHRASE_KEYS = UNSAFE_PHRASES.map { it.replace(" ", "").lowercase(Locale.ROOT) }
 	}
 }

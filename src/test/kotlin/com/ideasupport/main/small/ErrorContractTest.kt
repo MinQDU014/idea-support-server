@@ -10,7 +10,7 @@ import org.springframework.mock.web.MockHttpServletRequest
 class ErrorContractTest {
 	private val handler = GlobalServerErrorExceptionHandler()
 
-	@Test fun `rate limit includes retry after and stable JSON fields`() {
+	@Test fun `요청 제한 응답은 재시도 시간과 고정된 JSON 필드를 포함한다`() {
 		val response = handler.domain(ServerErrorException(INTERNAL_ERROR_CODE.RATE_LIMITED, 42))
 		assertEquals(429, response.statusCode.value())
 		assertEquals("42", response.headers.getFirst("Retry-After"))
@@ -18,19 +18,19 @@ class ErrorContractTest {
 		assertEquals("RATE_LIMITED", response.body!!.name)
 	}
 
-	@Test fun `rate limit without an interval uses sixty seconds`() {
+	@Test fun `간격이 없는 요청 제한은 60초를 쓴다`() {
 		assertEquals("60", handler.domain(ServerErrorException(INTERNAL_ERROR_CODE.RATE_LIMITED)).headers.getFirst("Retry-After"))
 	}
 
-	@Test fun `input failure is 400 with domain JSON`() {
+	@Test fun `입력 실패는 도메인 JSON과 함께 400이다`() {
 		assertEquals(1100, handler.input(IllegalArgumentException()).body!!.code)
 	}
 
-	@Test fun `missing resource is 404`() {
+	@Test fun `없는 자원은 404다`() {
 		assertEquals(404, handler.missing().statusCode.value())
 	}
 
-	@Test fun `unexpected exceptions never expose private messages`() {
+	@Test fun `예상하지 못한 예외는 내부 메시지를 노출하지 않는다`() {
 		val result = handler.unexpected(IllegalStateException("private-provider-key"), MockHttpServletRequest("POST", "/app/ideas"))
 		assertEquals(500, result.statusCode.value())
 		assertEquals(9997, result.body!!.code)

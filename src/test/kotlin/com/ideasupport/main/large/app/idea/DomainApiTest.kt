@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import java.util.UUID
 
 class DomainApiTest : MySqlApiTestSupport() {
-	@Test fun `local React preview supports its printed IPv4 origin`() {
+	@Test fun `로컬 React 미리보기가 출력된 IPv4 주소 출처를 허용한다`() {
 		val response =
 			mvc.perform(
 				options(
@@ -27,7 +27,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		assertEquals("http://127.0.0.1:5173", response.getHeader("Access-Control-Allow-Origin"))
 	}
 
-	@Test fun `unlisted origins remain denied`() {
+	@Test fun `허용 목록에 없는 출처는 계속 거부된다`() {
 		assertEquals(
 			403,
 			mvc.perform(
@@ -36,7 +36,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		)
 	}
 
-	@TestFactory fun `all business endpoints require access authentication`() =
+	@TestFactory fun `모든 업무 엔드포인트는 액세스 인증을 요구한다`() =
 		listOf(
 			Triple("GET", "/app/categories", null), Triple("POST", "/app/categories/preview", mapOf("name" to "요리")),
 			Triple("POST", "/app/categories", mapOf("name" to "요리")), Triple("POST", "/app/words/draw", mapOf("categoryId" to "c")),
@@ -51,16 +51,16 @@ class DomainApiTest : MySqlApiTestSupport() {
 			Triple("GET", "/app/posts", null), Triple("PUT", "/app/posts/missing/reaction", mapOf("kind" to "like")),
 		).map { (method, path, body) -> dynamicTest("$method $path") { request(method, path, body, expected = 401) } }
 
-	@TestFactory fun `invalid user inputs return 400 JSON without starting AI`() =
+	@TestFactory fun `잘못된 사용자 입력은 AI를 시작하지 않고 400 JSON을 반환한다`() =
 		listOf(
-			"empty category" to ("/app/categories" to mapOf("name" to " ")),
-			"long category" to ("/app/categories/preview" to mapOf("name" to "가".repeat(51))),
-			"missing category" to ("/app/words/draw" to emptyMap<String, Any>()),
-			"two words" to ("/app/ideas" to mapOf("categoryId" to "c", "wordIds" to listOf("a", "b"))),
-			"four words" to ("/app/ideas" to mapOf("categoryId" to "c", "wordIds" to listOf("a", "b", "c", "d"))),
-			"long direction" to ("/app/ideas" to mapOf("categoryId" to "c", "wordIds" to listOf("a", "b", "c"), "direction" to "가".repeat(201))),
-			"blank share idea" to ("/app/shares" to mapOf("ideaId" to "")),
-			"missing post idea" to ("/app/posts" to emptyMap<String, Any>()),
+			"빈 카테고리 이름" to ("/app/categories" to mapOf("name" to " ")),
+			"너무 긴 카테고리 이름" to ("/app/categories/preview" to mapOf("name" to "가".repeat(51))),
+			"카테고리 없이 단어 뽑기" to ("/app/words/draw" to emptyMap<String, Any>()),
+			"단어 두 개" to ("/app/ideas" to mapOf("categoryId" to "c", "wordIds" to listOf("a", "b"))),
+			"단어 네 개" to ("/app/ideas" to mapOf("categoryId" to "c", "wordIds" to listOf("a", "b", "c", "d"))),
+			"너무 긴 방향" to ("/app/ideas" to mapOf("categoryId" to "c", "wordIds" to listOf("a", "b", "c"), "direction" to "가".repeat(201))),
+			"빈 공유 아이디어" to ("/app/shares" to mapOf("ideaId" to "")),
+			"아이디어 없는 게시글" to ("/app/posts" to emptyMap<String, Any>()),
 		).map { (name, input) ->
 			dynamicTest(name) {
 				val (token, _) = member()
@@ -70,7 +70,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 			}
 		}
 
-	@Test fun `malformed JSON receives common input error`() {
+	@Test fun `깨진 JSON은 공통 입력 오류를 받는다`() {
 		val (token, _) = member()
 		val response =
 			mvc.perform(
@@ -80,7 +80,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		assertEquals(1100, mapper.readTree(response.contentAsByteArray)["code"].asInt())
 	}
 
-	@TestFactory fun `feed validates sorting limits and cursor format`() =
+	@TestFactory fun `피드는 정렬 기준과 개수 제한과 커서 형식을 검증한다`() =
 		listOf("sort=unknown", "limit=0", "limit=51", "limit=text", "cursor=not-json").map { query ->
 			dynamicTest(query) {
 				val (token, _) = member()
@@ -88,7 +88,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 			}
 		}
 
-	@Test fun `seed counts and empty feed are predictable on a clean database`() {
+	@Test fun `깨끗한 데이터베이스에서는 시드 개수와 빈 피드를 예측할 수 있다`() {
 		val (token, _) = member()
 		val items = request("GET", "/app/categories", token = token)["items"]
 		assertEquals(listOf(148, 149, 152), items.map { it["wordCount"].asInt() }.sorted())
@@ -98,7 +98,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		assertTrue(feed["nextCursor"].isNull)
 	}
 
-	@Test fun `signup prevents duplicate IDs and stores a hash`() {
+	@Test fun `회원가입은 중복 아이디를 막고 비밀번호를 해시로 저장한다`() {
 		val id = "user-${UUID.randomUUID()}"
 		val body = mapOf("id" to id, "pw" to "password", "email" to "student@example.com", "name" to "학생", "birth" to "2000-01-01")
 		request("POST", "/app/user/sign-up", body)
@@ -108,7 +108,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		request("POST", "/app/user/login", mapOf("id" to "no-user", "pw" to "wrong"), expected = 404)
 	}
 
-	@Test fun `access and refresh token purposes cannot be swapped`() {
+	@Test fun `액세스 토큰과 리프레시 토큰은 용도를 바꿔 쓸 수 없다`() {
 		val (access, refresh) = member()
 		request("POST", "/app/user/refresh-token", mapOf("refreshToken" to access), expected = 401)
 		request("GET", "/app/user/profile", token = refresh, expected = 401)
@@ -116,7 +116,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		request("POST", "/app/user/refresh-token", mapOf("refreshToken" to refresh))
 	}
 
-	@Test fun `category preview never persists and insufficient matches return 422`() {
+	@Test fun `카테고리 미리보기는 저장하지 않으며 일치하는 단어가 부족하면 422를 반환한다`() {
 		val (token, _) = member()
 		val before = categories.count()
 		val preview = request("POST", "/app/categories/preview", mapOf("name" to "캠핑 요리"), token)
@@ -126,7 +126,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		assertEquals(before, categories.count())
 	}
 
-	@Test fun `three locked words and foreign category IDs are rejected`() {
+	@Test fun `고정 단어 세 개와 다른 카테고리의 아이디는 거부된다`() {
 		val (token, _) = member()
 		val body = input()
 		request("POST", "/app/words/draw", mapOf("categoryId" to body["categoryId"], "lockedWordIds" to body["wordIds"]), token, 400)
@@ -142,7 +142,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		request("POST", "/app/words/draw", mapOf("categoryId" to body["categoryId"], "lockedWordIds" to listOf(foreign.id)), token, 400)
 	}
 
-	@TestFactory fun `missing resources produce 404`() =
+	@TestFactory fun `없는 자원은 404를 반환한다`() =
 		listOf(
 			"GET" to "/app/ideas/missing",
 			"POST" to "/app/ideas/missing/recombine",
@@ -155,7 +155,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 			}
 		}
 
-	@Test fun `link posts are absent from feed and cannot receive reactions`() {
+	@Test fun `링크 전용 글은 피드에 나오지 않고 반응을 받을 수 없다`() {
 		val (owner, _) = member()
 		val (other, _) = member()
 		val id = request("POST", "/app/ideas", input(), owner, 201)["idea"]["id"].asText()
@@ -165,7 +165,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		assertFalse(request("POST", "/app/shares", mapOf("ideaId" to id), owner)["created"].asBoolean())
 	}
 
-	@Test fun `invalid reactions return 400 and cancellation without a reaction is idempotent`() {
+	@Test fun `잘못된 반응은 400을 반환하고 반응이 없는 상태의 취소는 여러 번 해도 결과가 같다`() {
 		val (owner, _) = member()
 		val (other, _) = member()
 		val id = request("POST", "/app/ideas", input(), owner, 201)["idea"]["id"].asText()
@@ -174,7 +174,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		repeat(2) { assertTrue(request("PUT", "/app/posts/$post/reaction", mapOf("kind" to null), other)["myReaction"].isNull) }
 	}
 
-	@Test fun `recipe provider failure is not persisted and next call recovers`() {
+	@Test fun `레시피 제공자 실패는 저장되지 않고 다음 호출에서 복구된다`() {
 		val (token, _) = member()
 		val id = request("POST", "/app/ideas", input(), token, 201)["idea"]["id"].asText()
 		doThrow(ServerErrorException(INTERNAL_ERROR_CODE.AI_TIMEOUT)).`when`(ai).generateRecipe(anyString(), anyString(), anyString())
@@ -185,7 +185,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		assertTrue(request("GET", "/app/ideas/$id", token = token)["idea"]["hasRecipe"].asBoolean())
 	}
 
-	@Test fun `infeasible recipe is a valid cached result`() {
+	@Test fun `만들 수 없는 레시피도 유효한 캐시 결과다`() {
 		val (token, _) = member()
 		val id = request("POST", "/app/ideas", input(), token, 201)["idea"]["id"].asText()
 		doReturn(
@@ -195,7 +195,7 @@ class DomainApiTest : MySqlApiTestSupport() {
 		assertTrue(request("POST", "/app/ideas/$id/recipe", token = token)["cached"].asBoolean())
 	}
 
-	@TestFactory fun `development and operational demonstration routes stay blocked`() =
+	@TestFactory fun `개발용 경로와 운영 시연 경로는 계속 막혀 있다`() =
 		listOf("/app/dev/get-pw/test", "/common/ip/init", "/common/error", "/common/user-level-lock").map { path ->
 			dynamicTest(path) {
 				assertEquals(403, mvc.perform(get(path)).andReturn().response.status)

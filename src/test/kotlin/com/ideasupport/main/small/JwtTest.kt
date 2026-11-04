@@ -13,7 +13,7 @@ class JwtTest {
 	private val jwt = Jwt("aWRlYS1zdXBwb3J0LXRlc3Qtc2VjcmV0LWtleS0wMDAx", 600, 604800, users)
 	private val user = UserCommonDto(uid = "member-1", email = "student@example.com", name = "학생")
 
-	@Test fun `tokens enforce signature expiry purpose and membership`() {
+	@Test fun `토큰은 서명과 만료와 용도와 회원 여부를 검증한다`() {
 		val access = jwt.createAccessToken(user)
 		val refresh = jwt.createRefreshToken(user)
 		assertEquals(user.uid, jwt.validateToken(access).uid)

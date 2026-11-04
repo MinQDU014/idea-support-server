@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import java.util.UUID
 
 class RecipeScopeApiTest : MySqlApiTestSupport() {
-	@Test fun `category metadata advertises cooking only for the seeded food category`() {
+	@Test fun `카테고리 정보는 시드된 음식 카테고리에만 요리 지원을 알린다`() {
 		val (token, _) = member()
 		val items = request("GET", "/app/categories", token = token)["items"]
 		assertTrue(items.first { it["name"].asText() == "음식 개발" }["supportsRecipe"].asBoolean())
@@ -47,7 +47,7 @@ class RecipeScopeApiTest : MySqlApiTestSupport() {
 		)
 	}
 
-	@TestFactory fun `program and contest receive their own follow-up guidance`() =
+	@TestFactory fun `프로그램과 공모전은 각자의 후속 안내를 받는다`() =
 		listOf("프로그램 개발", "공모전 주제선정").map { name ->
 			dynamicTest(name) {
 				val (token, _) = member()
@@ -59,7 +59,7 @@ class RecipeScopeApiTest : MySqlApiTestSupport() {
 			}
 		}
 
-	@Test fun `legacy untyped plan is replaced and shared with the correct heading`() {
+	@Test fun `유형이 없던 예전 계획은 교체되고 올바른 제목으로 공유된다`() {
 		val (token, _) = member()
 		val id = ideaFor("공모전 주제선정", token)
 		legacyPlan(id)
@@ -77,7 +77,7 @@ class RecipeScopeApiTest : MySqlApiTestSupport() {
 		assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM recipes WHERE idea_id=?", Int::class.java, id))
 	}
 
-	@Test fun `food advertises support and a legacy plan is replaced by a real cooking recipe`() {
+	@Test fun `음식은 지원을 알리고 예전 계획은 실제 요리 레시피로 교체된다`() {
 		val (token, _) = member()
 		val id = ideaFor("음식 개발", token)
 		legacyPlan(id)

@@ -30,7 +30,7 @@ class WordMatchTest {
 		whenever(repository.findById(any())).thenReturn(Optional.empty())
 	}
 
-	@Test fun `sufficient keyword matches avoid AI entirely`() {
+	@Test fun `키워드 일치가 충분하면 AI를 아예 쓰지 않는다`() {
 		provider()
 		val tagged = pool.map { WordEntity(id = it.id, text = it.text, keywords = "캠핑 요리") }
 		val result = component.match("캠핑", tagged, 10, 1)
@@ -39,13 +39,13 @@ class WordMatchTest {
 		verify(ai, never()).selectWords(any(), any())
 	}
 
-	@Test fun `mock mode never invents matching words`() {
+	@Test fun `모의 모드는 일치하는 단어를 지어내지 않는다`() {
 		whenever(ai.source).thenReturn("mock")
 		assertTrue(component.match("unrelated", pool, 10, 1).words.isEmpty())
 		verify(ai, never()).selectWords(any(), any())
 	}
 
-	@Test fun `valid provider IDs are cached and returned from candidate pool`() {
+	@Test fun `올바른 제공자 아이디는 캐시되고 후보 풀에서 반환된다`() {
 		provider()
 		whenever(ai.selectWords(any(), any())).thenReturn(pool.take(10).map { it.id })
 		val result = component.match("건강 관리", pool, 10, 1)
@@ -54,9 +54,9 @@ class WordMatchTest {
 		verify(repository).save(check<MatchCacheEntity> { assertEquals(10, mapper.readTree(it.result).size()) })
 	}
 
-	@TestFactory fun `duplicate foreign and excessive AI selections are rejected without caching`() =
+	@TestFactory fun `중복되거나 후보 밖이거나 너무 많은 AI 선택은 캐시하지 않고 거부한다`() =
 		listOf(listOf("w1", "w1"), listOf("foreign"), (1..41).map { "w$it" }).map { ids ->
-			dynamicTest("invalid selection size ${ids.size}") {
+			dynamicTest("잘못된 선택 개수 ${ids.size}") {
 				provider()
 				whenever(ai.selectWords(any(), any())).thenReturn(ids)
 				assertEquals(1108, assertThrows(ServerErrorException::class.java) { component.match("건강 관리", pool, 10, 1) }.errorCode)
@@ -64,7 +64,7 @@ class WordMatchTest {
 			}
 		}
 
-	@Test fun `fresh cache avoids provider and maps IDs back to current words`() {
+	@Test fun `유효한 캐시는 제공자를 부르지 않고 아이디를 현재 단어로 되돌린다`() {
 		provider()
 		whenever(
 			repository.findById(any()),
@@ -75,12 +75,12 @@ class WordMatchTest {
 		verify(ai, never()).selectWords(any(), any())
 	}
 
-	@Test fun `expired cache is ignored`() {
+	@Test fun `만료된 캐시는 무시한다`() {
 		whenever(repository.findById("old")).thenReturn(Optional.of(MatchCacheEntity(expiresAt = Instant.now().minusSeconds(1))))
 		assertNull(cache.get("old"))
 	}
 
-	@Test fun `cache key changes when candidate metadata changes`() {
+	@Test fun `후보 메타데이터가 바뀌면 캐시 키가 달라진다`() {
 		provider()
 		whenever(ai.selectWords(any(), any())).thenReturn(emptyList())
 		component.match("건강", pool, 3, 1)

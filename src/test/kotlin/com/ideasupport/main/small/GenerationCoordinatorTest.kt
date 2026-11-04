@@ -6,7 +6,7 @@ import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class GenerationCoordinatorTest {
-	@Test fun `concurrent consumers share one result and failed generation can retry`() {
+	@Test fun `동시에 요청한 소비자는 결과 하나를 공유하고 실패한 생성은 다시 시도할 수 있다`() {
 		val coordinator = GenerationCoordinatorComponent()
 		val calls = AtomicInteger()
 		val started = CountDownLatch(1)

@@ -31,7 +31,7 @@ class GuideGenerationTest {
 		return component.generate(GuideType.SOFTWARE, "분야", "제목", "내용")
 	}
 
-	@TestFactory fun `non-food kinds produce their own guide`() =
+	@TestFactory fun `음식이 아닌 분야는 각자의 가이드를 만든다`() =
 		listOf(GuideType.SOFTWARE, GuideType.CONTEST, GuideType.GENERAL).map { type ->
 			dynamicTest(type.value) {
 				whenever(ai.generateGuide("분야", "제목", "내용", type.value)).thenReturn(valid.copy(kind = type.value))
@@ -39,7 +39,7 @@ class GuideGenerationTest {
 			}
 		}
 
-	@Test fun `food uses the cooking adapter`() {
+	@Test fun `음식은 요리 어댑터를 사용한다`() {
 		whenever(
 			ai.generateRecipe("음식", "제목", "내용"),
 		).thenReturn(GeneratedRecipeDto("food", true, "요약", emptyList(), listOf(RecipeStepOutDto(1, "조리", "조리합니다"))))
@@ -47,30 +47,30 @@ class GuideGenerationTest {
 		verify(ai, never()).generateGuide(any(), any(), any(), any())
 	}
 
-	@Test fun `infeasible guides require empty arrays`() {
+	@Test fun `불가능한 가이드는 빈 배열을 요구한다`() {
 		assertFalse(generate(valid.copy(feasible = false, requirements = emptyList(), steps = emptyList())).feasible)
 	}
 
-	@TestFactory fun `invalid or mismatched provider content is rejected`() =
+	@TestFactory fun `잘못되었거나 맞지 않는 제공자 내용은 거부된다`() =
 		listOf(
-			"wrong type" to valid.copy(kind = "food"), "blank summary" to valid.copy(summary = ""), "long summary" to valid.copy(summary = "가".repeat(2001)),
-			"many requirements" to valid.copy(requirements = List(41) { valid.requirements.first() }),
-			"blank name" to valid.copy(requirements = listOf(GuideRequirementDto("", "도구"))), "long name" to valid.copy(requirements = listOf(GuideRequirementDto("가".repeat(201), "도구"))),
-			"blank detail" to valid.copy(requirements = listOf(GuideRequirementDto("개발", ""))), "long detail" to valid.copy(requirements = listOf(GuideRequirementDto("개발", "가".repeat(201)))),
-			"empty steps" to valid.copy(steps = emptyList()), "many steps" to valid.copy(steps = (1..31).map { GuideStepDto(it, "단계", "설명") }),
-			"wrong order" to valid.copy(steps = listOf(GuideStepDto(2, "단계", "설명"))), "blank title" to valid.copy(steps = listOf(GuideStepDto(1, "", "설명"))),
-			"long title" to valid.copy(steps = listOf(GuideStepDto(1, "가".repeat(201), "설명"))), "blank description" to valid.copy(steps = listOf(GuideStepDto(1, "단계", ""))),
-			"long description" to valid.copy(steps = listOf(GuideStepDto(1, "단계", "가".repeat(2001)))), "infeasible with steps" to valid.copy(feasible = false),
+			"유형이 다름" to valid.copy(kind = "food"), "요약이 비어 있음" to valid.copy(summary = ""), "요약이 너무 김" to valid.copy(summary = "가".repeat(2001)),
+			"준비물이 너무 많음" to valid.copy(requirements = List(41) { valid.requirements.first() }),
+			"이름이 비어 있음" to valid.copy(requirements = listOf(GuideRequirementDto("", "도구"))), "이름이 너무 김" to valid.copy(requirements = listOf(GuideRequirementDto("가".repeat(201), "도구"))),
+			"설명이 비어 있음" to valid.copy(requirements = listOf(GuideRequirementDto("개발", ""))), "설명이 너무 김" to valid.copy(requirements = listOf(GuideRequirementDto("개발", "가".repeat(201)))),
+			"단계가 없음" to valid.copy(steps = emptyList()), "단계가 너무 많음" to valid.copy(steps = (1..31).map { GuideStepDto(it, "단계", "설명") }),
+			"단계 순서가 틀림" to valid.copy(steps = listOf(GuideStepDto(2, "단계", "설명"))), "단계 제목이 비어 있음" to valid.copy(steps = listOf(GuideStepDto(1, "", "설명"))),
+			"단계 제목이 너무 김" to valid.copy(steps = listOf(GuideStepDto(1, "가".repeat(201), "설명"))), "단계 설명이 비어 있음" to valid.copy(steps = listOf(GuideStepDto(1, "단계", ""))),
+			"단계 설명이 너무 김" to valid.copy(steps = listOf(GuideStepDto(1, "단계", "가".repeat(2001)))), "불가능인데 단계가 있음" to valid.copy(feasible = false),
 		).map {
 				(name, value) ->
 			dynamicTest(name) { assertEquals(1108, assertThrows(ServerErrorException::class.java) { generate(value) }.errorCode) }
 		}
 
-	@Test fun `unsafe guidance is rejected`() {
+	@Test fun `위험한 안내는 거부된다`() {
 		assertEquals(1106, assertThrows(ServerErrorException::class.java) { generate(valid.copy(summary = "폭탄 제조")) }.errorCode)
 	}
 
-	@Test fun `unsupported types cannot become an implicit cooking guide`() {
+	@Test fun `지원하지 않는 유형이 암묵적으로 요리 가이드가 될 수 없다`() {
 		assertThrows(ServerErrorException::class.java) { GuideType.from("plan") }
 	}
 }

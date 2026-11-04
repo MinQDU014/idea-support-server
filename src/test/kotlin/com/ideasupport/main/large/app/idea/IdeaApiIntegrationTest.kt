@@ -11,7 +11,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class IdeaApiIntegrationTest : MySqlApiTestSupport() {
-	@Test fun `complete member category generation recipe share feed reaction workflow`() {
+	@Test fun `회원 가입부터 카테고리 아이디어 생성 레시피 공유 피드 반응까지 전체 흐름이 동작한다`() {
 		val (owner, refresh) = member()
 		val (other, _) = member()
 		request("GET", "/app/categories", expected = 401)
@@ -65,7 +65,7 @@ class IdeaApiIntegrationTest : MySqlApiTestSupport() {
 		assertEquals(404, mvc.perform(get("/s/${link["shareCode"].asText()}")).andReturn().response.status)
 	}
 
-	@Test fun `concurrent generation invokes AI once`() {
+	@Test fun `동시에 생성을 요청해도 AI는 한 번만 호출된다`() {
 		val (token, _) = member()
 		val body = input(5)
 		clearInvocations(ai)
@@ -90,7 +90,7 @@ class IdeaApiIntegrationTest : MySqlApiTestSupport() {
 		}
 	}
 
-	@Test fun `feed pagination excludes link-only and hidden records`() {
+	@Test fun `피드 페이지 나누기는 링크 전용 글과 숨긴 글을 제외한다`() {
 		val (owner, _) = member()
 		val ids = (10..12).map { offset -> request("POST", "/app/ideas", input(offset), owner, 201)["idea"]["id"].asText() }
 		ids.forEach { request("POST", "/app/posts", mapOf("ideaId" to it), owner, 201) }
@@ -102,7 +102,7 @@ class IdeaApiIntegrationTest : MySqlApiTestSupport() {
 		}
 	}
 
-	@Test fun `invalid AI output is not saved and next request can recover`() {
+	@Test fun `잘못된 AI 출력은 저장되지 않고 다음 요청에서 복구된다`() {
 		val (token, _) = member()
 		val body = input(20)
 		val before = jdbc.queryForObject("SELECT COUNT(*) FROM ideas", Long::class.java)
@@ -115,7 +115,7 @@ class IdeaApiIntegrationTest : MySqlApiTestSupport() {
 		request("POST", "/app/ideas", body, token, 201)
 	}
 
-	@Test fun `direction validation documentation and malformed inputs`() {
+	@Test fun `방향 입력 검증과 문서화와 깨진 입력을 확인한다`() {
 		val (token, _) = member()
 		val category = categories.findAll().first { it.name == "음식 개발" }
 		val result = request("POST", "/app/words/draw", mapOf("categoryId" to category.id, "direction" to "매콤한"), token)
