@@ -26,7 +26,7 @@ RemainAfterExit=yes
 WantedBy=multi-user.target
 ''')
 backup = '''#!/usr/bin/python3
-import gzip,json,os,subprocess,time
+import gzip,json,os,shutil,subprocess,tempfile,time
 from pathlib import Path
 os.umask(0o077)
 root=Path('/opt/classroom-cd')
@@ -36,13 +36,22 @@ cfg=json.loads((root/'credentials.json').read_text())
 databases=[env['database'] for team in cfg['teams'].values() for env in team['environments'].values()]
 stamp=time.strftime('%Y%m%dT%H%M%SZ',time.gmtime())
 temporary=folder/(stamp+'.sql.gz.tmp')
-with gzip.open(temporary,'wb') as output:
-    result=subprocess.run(['docker','compose','-p','classroom-infra','-f',str(root/'infra.json'),'exec','-T',
+with tempfile.TemporaryFile() as errors:
+    process=subprocess.Popen(['docker','compose','-p','classroom-infra','-f',str(root/'infra.json'),'exec','-T',
         'mysql','sh','-c','MYSQL_PWD=$(cat /run/secrets/mysql-root) exec mysqldump -uroot --single-transaction --no-tablespaces --routines --events --databases "$@"',
-        'dump',*databases],stdout=output,stderr=subprocess.PIPE)
-if result.returncode:
+        'dump',*databases],stdout=subprocess.PIPE,stderr=errors)
+    # A subprocess writing to a GzipFile's descriptor bypasses compression.
+    # Read its pipe in Python so all bytes pass through the gzip writer.
+    with gzip.open(temporary,'wb') as output:
+        shutil.copyfileobj(process.stdout,output)
+    process.stdout.close()
+    returncode=process.wait()
+if returncode:
     temporary.unlink(missing_ok=True)
     raise RuntimeError('MySQL backup failed')
+with gzip.open(temporary,'rb') as compressed:
+    while compressed.read(1024*1024):
+        pass
 destination=temporary.with_suffix('')
 temporary.replace(destination)
 for previous in folder.glob('*.sql.gz'):

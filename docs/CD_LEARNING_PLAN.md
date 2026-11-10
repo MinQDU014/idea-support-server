@@ -56,9 +56,9 @@ EC2를 택하면 VPC·보안 그룹·디스크·권한 같은 AWS 기본 구성�
 
 EKS 표준 지원 버전의 기본 클러스터 요금은 USD 0.10/시간, 730시간이면 USD 73/월이다. 노드·디스크·공인 IP·로드 밸런서·NAT·DB 등의 비용은 별도다. 확장 지원 요금은 더 높다. 학생 8팀은 클러스터 한 개를 공유하고 수업에 필요한 시간만 생성·사용·정리하는 방식을 권장한다. 노드만 0개로 줄여도 클러스터 요금은 남는다.
 
-## 현재 Notion 후반부에서 갱신할 부분
+## 이번에 반영한 Notion 후반부
 
-브라우저로 [11주차 CD 강의](https://app.notion.com/p/project-2026-01/11-CD-40d9fa2a819d801ebbbbf605cc00843f)를 수정하고 있다. Notion connector에서는 404여서 로그인된 브라우저를 사용한다. dev의 실제 주소·Compose·DB 분리·상태 확인·복구를 반영하고 main/EKS는 다음 주 예고로 구분한다. 최종 저장 검증은 작업 기록에 남긴다.
+브라우저로 [11주차 CD 강의](https://app.notion.com/p/project-2026-01/11-CD-40d9fa2a819d801ebbbbf605cc00843f)를 수정하고 새로고침 후 저장을 확인했다. Notion connector에서는 404여서 로그인된 브라우저를 사용했다. dev 실제 주소·Compose·DB 분리·GitHub Variables/Secrets·자동 배포·상태 확인·SSH 없는 복구를 반영했다. main/EKS는 다음 주 예고로 구분하고 아직 생성하지 않았음을 명시했다. 수동 서버 명령은 강사 시연으로, 학생 작업은 GitHub와 자기 팀 URL로 분리했다.
 
 - 6장: 기존 main 중심 흐름을 dev → 자체 Registry → 공유 실행 서버, main → ECR → EKS 두 경로로 나눈다.
 - 6장: 기존 `docker-repo.minq.work`를 현재 `docker.minq.live`로 바꾼다.
@@ -78,4 +78,4 @@ EKS 표준 지원 버전의 기본 클러스터 요금은 USD 0.10/시간, 730�
 - [Kubernetes: 다중 팀 권한·자원·네트워크 분리](https://kubernetes.io/docs/concepts/security/multi-tenancy/)
 - [Kubernetes: Deployment 진행 상태와 되돌리기](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
 
-채택 후 갱신 대상: 11주차 Notion의 6·7·8장, dev 배포용 Compose·배포 단계, main의 EKS 배포 리소스·권한·상태 확인. 현재 저장소의 main workflow는 ECR 업로드까지만 있으며 EKS 배포는 아직 구성하지 않았다.
+완료한 업데이트: 11주차 Notion의 CD 설명·6·7·8장·활동 STEP 1~4·마무리·다음 주 예고, dev 공유 Compose·인증된 배포 API·CI 배포/health 단계. main workflow는 기존 ECR 업로드를 유지하며 EKS 리소스·권한·배포 검증은 다음 주 작업이다.

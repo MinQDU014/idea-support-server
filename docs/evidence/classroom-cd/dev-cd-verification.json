@@ -1,0 +1,63 @@
+{
+  "github": {
+    "attempt": 2,
+    "conclusion": "success",
+    "databaseId": 42836332717,
+    "headSha": "712772366e38daa42d41b2cd83f196280a3b7ea2",
+    "status": "completed",
+    "url": "https://github.com/MinQDU014/idea-support-server/actions/runs/42836332717"
+  },
+  "jobs": [
+    {
+      "name": "Push dev image to Registry",
+      "conclusion": "success"
+    },
+    {
+      "name": "Dev Lint and Test",
+      "conclusion": "success"
+    }
+  ],
+  "registry": {
+    "latest": {
+      "digest": "sha256:a6a983ca5926d7161419df187781b01d4af88b55465d545064a9e83356fe8b25",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ]
+    },
+    "dev-712772366e38daa42d41b2cd83f196280a3b7ea2": {
+      "digest": "sha256:a6a983ca5926d7161419df187781b01d4af88b55465d545064a9e83356fe8b25",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ]
+    }
+  },
+  "deployed": {
+    "team": "team",
+    "image": "docker.minq.live/team/idea-support-server@sha256:a6a983ca5926d7161419df187781b01d4af88b55465d545064a9e83356fe8b25",
+    "previous": "docker.minq.live/team/idea-support-server@sha256:a56a12ab1f4af0035f3bbe8646a2b9d6f5e0284a4526068a49199e8974bb0562",
+    "revision": "712772366e38daa42d41b2cd83f196280a3b7ea2",
+    "time": 1794322086,
+    "status": "deployed"
+  },
+  "external_health": {
+    "status": "ok",
+    "database": "up",
+    "aiMode": "mock",
+    "seedReady": true
+  },
+  "eks_created": false
+}

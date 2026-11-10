@@ -27,7 +27,8 @@ flowchart LR
         UI[이미지·태그 조회 화면] --- Registry
         Disk[공유 디스크 40GB] --- Registry
     end
-    Registry -. 다음 CD 단계에서 pull .-> App[앱 컨테이너 실행]
+    Registry --> Deploy[팀별 HTTPS 배포 요청]
+    Deploy --> App[Lightsail Compose의 자기 팀 앱 교체·상태 확인]
 ```
 
 이미지 이름은 팀을, 태그는 버전을 구분합니다. dev 브랜치에서 검사·업로드를 성공할 때마다 `latest`를 갱신합니다. 브랜치와 앱 프로필이 dev여도 최신 이미지 태그는 `latest`입니다. `dev-커밋전체번호` 또는 digest로 CD에서 실행할 버전을 정확히 지정할 수도 있습니다. 같은 내용의 레이어는 Registry 안에서 중복 저장을 줄일 수 있습니다.
@@ -64,6 +65,8 @@ flowchart LR
 | Variables | `DEV_REGISTRY_NAMESPACE` | 학생은 `team1`~`team8` 중 우리 팀 · 생략하면 강의 예시 `team` |
 | Secrets | `DEV_REGISTRY_USER` | 배정받은 로그인 계정 |
 | Secrets | `DEV_REGISTRY_PASSWORD` | 계정 비밀번호 |
+| Variables | `DEV_DEPLOY_URL` | `https://daelim.minq.live/_cd/team1`처럼 자기 팀 주소 |
+| Secrets | `DEV_DEPLOY_TOKEN` | `cd-access.json`에서 배정받은 자기 팀 토큰 |
 
 Environment의 사용 가능 브랜치도 `dev`로 제한합니다. 비밀번호는 공개 강의자료나 workflow에 적지 않습니다.
 
@@ -102,7 +105,7 @@ Environment의 사용 가능 브랜치도 `dev`로 제한합니다. 비밀번호
 docker pull docker.minq.live/team1/idea-support-server:latest
 ```
 
-위 명령은 가장 최근 업로드 성공 이미지를 가져옵니다. 특정 버전을 고정하려면 `latest` 대신 `dev-커밋전체번호` 또는 digest를 사용합니다. 앱 실행에는 별도의 DB·환경변수·포트 설정과 컨테이너 교체가 필요합니다. 이번 Registry 설치는 앱 8개를 자동 실행하는 작업이 아닙니다.
+위 명령은 가장 최근 업로드 성공 이미지를 가져옵니다. 특정 버전을 고정하려면 `latest` 대신 `dev-커밋전체번호` 또는 digest를 사용합니다. 앱 실행에는 별도의 DB·환경변수·포트 설정과 컨테이너 교체가 필요합니다. 현재 dev workflow에는 별도 CD 단계도 연결했습니다. 공유 Lightsail의 예시와 8팀 앱, 팀별 URL·배포 토큰 설정은 [8팀 CD 안내](../deploy/classroom-cd/README.md)를 따릅니다. 업로드와 앱 교체 성공을 각각 확인합니다.
 
 ## 서버와 비용
 

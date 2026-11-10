@@ -105,3 +105,24 @@
 - 실제 cd-access.json도 백엔드와 로컬 .local에 저장하고 Git에서 제외했다. 공개 예제에는 가짜 토큰만 있다. 기존 HTML 포맷 미커밋 변경을 보존했다.
 
 업데이트 위치: .github/workflows/dev-registry.yaml, GitHub dev Environment, deploy/classroom-cd/, 서버 /opt/classroom-cd/, 11주차 Notion. EKS 초안은 다음 주 참고용이고 적용·검증 완료 자료가 아니다.
+
+### 이번 주 최종 적용·검증
+
+- 기능 커밋 712772366e38daa42d41b2cd83f196280a3b7ea2를 dev에 push했다. 실제 Actions https://github.com/MinQDU014/idea-support-server/actions/runs/42836332717 의 검사·테스트와 이미지 게시·배포 작업이 모두 성공했다(최종 attempt 2).
+- 첫 실행에서는 배포 수신기의 health 성공 후, 검증자가 동시에 보낸 수동 이전 버전 복구 요청과 CI의 추가 외부 health 요청이 겹쳐 502가 났다. 요청을 분리하고 실패한 게시·배포 작업만 재실행했다. 테스트 성공 작업은 재실행하지 않았다. 서비스 자체의 실패 복구 시험과 이 검증 순서 문제를 구분한다.
+- 최종 latest와 dev-712772366e38daa42d41b2cd83f196280a3b7ea2의 manifest digest는 sha256:a6a983ca5926d7161419df187781b01d4af88b55465d545064a9e83356fe8b25 이며 실제 예시 Compose의 image와 일치한다. amd64·arm64가 모두 있다. 외부 예시 health는 status=ok, database=up, seedReady=true다.
+- 학생용 request-deploy.py로 기존 예시 커밋 태그를 요청해 실제 이전 이미지 교체를 확인했고, 이후 CI가 새 이미지를 정상 배포했다. SSH 없이 토큰 파일과 Python 3으로 자기 팀 복구를 요청할 수 있다. 다른 팀 경로·latest·임의 명령 문자열은 허용하지 않는다.
+- 외부에서 공인 IP의 3306·9001·18080·18088 접근이 불가능함을 확인했다. 최종 controller 설치를 다시 실행해 9개 앱의 상태와 설정 유지, 서비스 활성화를 확인했다. 관리자 복구 스크립트는 서버 admin 디렉터리에 보관하고 Registry 계정 사본은 root 전용 경로로 옮겼다.
+- 실제 cd-access.json 두 사본의 Windows 권한도 소유자와 SYSTEM으로 제한했다. git check-ignore로 두 비밀 파일이 제외됨을 확인했다. Git에는 가짜 예제와 비밀값 없는 검증 JSON만 올린다.
+- 지정된 11주차 Notion 페이지의 CD 설명과 활동 STEP 1~4, GitHub Variables/Secrets, latest+커밋/digest, Compose 메모리·loopback 포트, health·DB 유지·복구, 다음 주 예고를 수정했다. 새로고침 후 저장된 설정·코드를 확인했다. main/EKS는 다음 주이며 이번 주 생성하지 않음을 명시했다.
+- 실제 Swagger UI가 HTTPS 예시 경로와 올바른 API 서버 URL로 로딩됨을 브라우저에서 확인했다. 노션·Swagger 화면 증거는 로컬 .local/evidence/에 보관했다. 실제 연결 기기 설치 검사는 사용자 지시대로 생략했다.
+- actionlint, Python 구문 검사, Linux의 배포 보호 동작 단위 검증 2개, Git 공백 검사를 통과했다. DB 권한은 18개 사용자, HTTPS health·Swagger는 9개 앱에서 검증했다. 부하 시험·실패 이미지 자동 복구의 실제 운영 시험·외부 백업 복원은 수행하지 않았다.
+- 이후 안내·도구·검증 기록 커밋은 [skip ci]로 같은 앱 빌드를 반복하지 않는다. 기존 deploy/dev-registry/index.html의 로컬 포맷 변경은 미커밋으로 보존했다.
+
+최종 업데이트 위치: GitHub dev 브랜치, 각 팀 GitHub dev Environment, 지정 11주차 Notion 페이지, 서버 /opt/classroom-cd/. 학생 저장소가 정해지면 해당 저장소에 workflow와 자기 팀의 Variables/Secrets만 등록한다. EKS 생성은 다음 주에 진행한다.
+
+### 백업 무결성 검사 보완
+
+- 최종 gzip 무결성 검사에서 초기 백업이 실제 압축 형식이 아님을 발견했다. subprocess가 GzipFile의 파일 디스크립터에 직접 쓰면 Python 압축 경로를 거치지 않는 것이 원인이었다.
+- mysqldump의 stdout을 Python 파이프로 받아 gzip writer에 스트리밍하고 CRC 검증을 통과한 뒤 확정 파일로 저장하도록 수정·실제 적용했다. 초기 잘못된 파일은 root 전용 경로에서 .invalid로 구분했다.
+- 새 백업 20261110T145517Z.sql.gz(345691 bytes)는 gzip 무결성 검사와 18개 DB 포함 검사를 통과했다. 배포·DB 방화벽·백업 타이머 3개도 모두 active다. 복원 시험을 했다는 의미는 아니다. 비밀값 없는 결과는 docs/evidence/classroom-cd/maintenance-verification.json에 기록했다.

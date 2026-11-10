@@ -1,0 +1,18 @@
+[
+  {
+    "port": 3306,
+    "publicly_reachable": false
+  },
+  {
+    "port": 9001,
+    "publicly_reachable": false
+  },
+  {
+    "port": 18080,
+    "publicly_reachable": false
+  },
+  {
+    "port": 18088,
+    "publicly_reachable": false
+  }
+]

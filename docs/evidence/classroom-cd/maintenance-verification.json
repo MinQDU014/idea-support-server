@@ -1,0 +1,15 @@
+{
+  "backup": {
+    "filename": "20261110T145517Z.sql.gz",
+    "compressed_bytes": 345691,
+    "gzip_integrity": true,
+    "database_count": 18,
+    "restoration_tested": false,
+    "location": "same VM; off-server recovery is separate"
+  },
+  "services": {
+    "classroom-deploy": "active",
+    "classroom-db-firewall": "active",
+    "classroom-db-backup.timer": "active"
+  }
+}

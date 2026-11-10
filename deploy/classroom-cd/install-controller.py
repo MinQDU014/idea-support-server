@@ -86,6 +86,7 @@ if 'handle /_cd/*' not in caddy:
     }''')
 (ROOT/'Caddyfile').write_text(caddy)
 subprocess.run(['systemctl','daemon-reload'],check=True)
-subprocess.run(['systemctl','enable','--now','classroom-deploy'],check=True)
+subprocess.run(['systemctl','enable','classroom-deploy'],check=True)
+subprocess.run(['systemctl','restart','classroom-deploy'],check=True)
 subprocess.run(['docker','compose','-p','classroom-infra','-f',str(ROOT/'infra.json'),'up','-d','gateway'],check=True)
 print('Authenticated team-scoped HTTPS deployment receiver ready; no tokens printed.')

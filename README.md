@@ -110,6 +110,6 @@ Cloud Build 파일을 사용하려면 `_CONTAINER_IMAGE` 치환값이 필요합�
 
 ## dev 이미지 저장소
 
-개발 브랜치의 기본 예시는 `docker.minq.live/team/idea-support-server:latest`이며, 학생은 GitHub의 `DEV_REGISTRY_NAMESPACE`만 `team1`~`team8`로 바꿉니다. dev push → 검사 → 이미지 업로드 순서로 동작하고 성공할 때마다 `latest`를 갱신합니다. 커밋별 `dev-커밋전체번호` 태그도 함께 남깁니다. 브랜치·앱 프로필은 dev이며 학생의 EC2·SSH 접속은 필요하지 않습니다. `main`의 ECR workflow는 그대로 유지합니다. [학생 업로드 안내](docs/DEV_REGISTRY.md), [서버 운영 파일](deploy/dev-registry/README.md), [적용·검증 기록](docs/DEV_REGISTRY_WORK_LOG.md)을 참고합니다. 이미지 업로드는 앱 컨테이너 실행과 별도입니다.
+개발 브랜치의 기본 예시는 `docker.minq.live/team/idea-support-server:latest`이며 학생은 `team1`~`team8`을 사용합니다. dev push → 검사·테스트 → 이미지 업로드 → Lightsail의 자기 팀 앱 교체 → health 확인까지 실행합니다. 최신 별칭 `latest`와 커밋별 `dev-커밋전체번호`를 함께 남기며 실행 버전은 digest로 고정합니다. [8팀 CD 설정 안내](deploy/classroom-cd/README.md)에 자기 팀 Variables·Secrets와 접속 주소를 정리했습니다. 학생 SSH는 필요하지 않습니다. 예시는 `https://daelim.minq.live/example/`, 학생은 `/team1/`~`/team8/`입니다. 실제 `team-access.json`·`cd-access.json`은 Git에서 제외합니다. main은 기존 ECR 업로드를 유지하며 EKS는 다음 주에 구축합니다. [Registry 안내](docs/DEV_REGISTRY.md)와 [적용·검증 기록](docs/DEV_REGISTRY_WORK_LOG.md)도 참고합니다.
 
 실제 팀별 로그인 정보는 이 백엔드의 루트 `team-access.json`에 로컬로 보관합니다. `.gitignore`로 제외하며 GitHub에는 각 팀의 계정 두 값만 `dev` Environment Secrets에 등록합니다. 이 파일은 Spring resources에 넣거나 앱 이미지에 포함하지 않습니다.

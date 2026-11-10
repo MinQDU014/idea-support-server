@@ -50,7 +50,13 @@ sudo docker compose -p team1 -f /opt/classroom-cd/team1/compose.json up -d --no-
 curl --fail https://daelim.minq.live/team1/common/health
 ```
 
-자동 배포 API로도 자기 팀의 기존 `dev-전체커밋` 또는 digest를 요청하면 같은 방식으로 복구할 수 있다. 앱 이미지 복구는 DB 스키마나 데이터를 되돌리지 않는다. 학생 실습에 `docker compose down -v`를 넣지 않는다.
+학생은 강사에게 자기 팀 항목만 담긴 `cd-access.json`을 받아 Git에서 제외한 백엔드 루트에 둔다. Python 3에서 다음과 같이 기존 커밋 태그 또는 digest를 요청하면 SSH 없이 복구할 수 있다. `FULL_COMMIT_SHA`는 실제 기존 태그의 전체 커밋 번호로 바꾼다.
+
+```sh
+python deploy/classroom-cd/request-deploy.py --team team1 --image docker.minq.live/team1/idea-support-server:dev-FULL_COMMIT_SHA
+```
+
+앱 이미지 복구는 DB 스키마나 데이터를 되돌리지 않는다. 학생 실습에 `docker compose down -v`를 넣지 않는다.
 
 ## 설치 도구와 검증
 
@@ -58,9 +64,9 @@ curl --fail https://daelim.minq.live/team1/common/health
 
 최초 launch script는 Lightsail의 `/bin/sh` 래퍼에서 bash 전용 `pipefail`로 중단됐다. 생성 도구는 POSIX 구문으로 수정했고 실제 VM은 관리 SSH bootstrap으로 설치했다. 이전 cloud-init 오류 이력과 현재 정상 상태는 구분한다.
 
-`verify-server.py`: 9개 HTTPS health·Swagger와 18개 DB의 자기 DB 허용/다른 팀·다른 환경 DB 거절을 검증한다. `test-deploy-server.py`: 다른 팀 이미지·임의 명령 문자열 거절과 실패 시 선택한 팀만 복구하는 동작을 검증한다. 부하·실기기 설치 시험은 수행하지 않았다.
+`verify-server.py`: 9개 HTTPS health·Swagger와 18개 DB의 자기 DB 허용/다른 팀·다른 환경 DB 거절을 검증한다. `test-deploy-server.py`: 다른 팀 이미지·임의 명령 문자열 거절과 실패 시 선택한 팀만 복구하는 동작을 검증한다. `verify-maintenance.py`: 백업 gzip 무결성·18개 DB 포함과 유지관리 서비스 상태를 확인한다. DB 복원·부하·실기기 설치 시험은 수행하지 않았다.
 
-검증 결과: `docs/evidence/classroom-cd/`. 실제 CI 결과는 작업 기록에 추가한다. 다음 주 초안 `EKS_REVIEW.md`·생성 템플릿은 적용·검증 완료 자료가 아니다.
+검증 결과: `docs/evidence/classroom-cd/`. [실제 Actions 42836332717](https://github.com/MinQDU014/idea-support-server/actions/runs/42836332717)의 검사·테스트·이미지 업로드·앱 교체·외부 health가 성공했다. 최신 태그와 실행 digest가 일치함을 별도로 확인했다. 다음 주 초안 `EKS_REVIEW.md`·생성 템플릿은 적용·검증 완료 자료가 아니다.
 
 ## 업데이트 위치
 
