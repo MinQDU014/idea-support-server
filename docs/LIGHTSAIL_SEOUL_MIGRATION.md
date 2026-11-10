@@ -1,0 +1,36 @@
+# Lightsail 서울 이전 작업
+
+2026-11-11 사용자 요청: 앱·DB·8팀 설정을 유지해 서울 `ap-northeast-2`로 이전하고 새 고정 IP를 전달한다. 사용자가 DNS를 바꾼 후 검증을 마치고 기존 시드니 Lightsail을 정리한다. 기존 EC2 Registry·ECR은 이 삭제 범위에 포함하지 않는다.
+
+## 현재 확인한 제약
+
+강의 계정 `950177940921`의 서울 CloudShell 화면에서 다음 안내를 확인했다.
+
+> 프로젝트가 아시아 태평양 (시드니) ap-southeast-2에 할당됩니다.
+
+이 계정은 AWS 새 가입 방식의 지역 고정 프로젝트다. 다른 리전을 사용하려면 Paid plan 전환 후 고급 기능 활성화가 필요하다는 안내가 나왔다. 결제·계정 전환은 아직 수행하지 않았고 서울 서버·IP도 생성하지 않았다. 기존 시드니 서버는 계속 운영한다.
+
+공식 근거: [프로젝트 리전 제한](https://docs.aws.amazon.com/accounts/latest/reference/project-regions.html), [가입 방식 비교](https://docs.aws.amazon.com/accounts/latest/reference/sign-up-for-aws.html). 일반 AWS 계정의 서울 리전 opt-in 문제와 구분한다.
+
+## 보존할 내용
+
+- 강의 예시 + team1~team8 앱 9개, 각 앱의 현재 image digest와 설정.
+- 공유 MySQL의 18개 DB·데이터 및 기존 팀별 dev/main 계정·비밀번호.
+- JWT·암호화 키, 팀별 배포 토큰, Registry 로그인 정보.
+- `daelim.minq.live` 경로·HTTPS 인증서·팀별 Swagger 서버 URL.
+- 관리자 SSH IP 제한과 현재 로컬 관리자 키. 서울 서버의 공개 키는 AWS 정보로 검증하고 별도로 기록한다.
+
+`prepare-migration.py`는 운영 중 일관된 논리 SQL 백업과 설정·인증서의 비공개 보관본을 만든다. 실제 값은 로그·Git에 출력하지 않는다. 이 예비 백업 뒤에도 시드니 쓰기는 계속되므로 최종 전환 전에 쓰기를 잠시 막고 최신 백업을 다시 만들어 복원해야 한다.
+
+## 실행 순서
+
+1. 기존 서버의 예비 데이터·설정 백업을 생성하고 로컬 비공개 보관본의 해시를 검증한다.
+2. 계정에서 서울 사용이 가능해지면 같은 8GB VM과 서울 고정 IP를 생성한다. 기존 설정과 비밀값을 유지해 복원한다.
+3. DNS를 바꾸기 전 새 IP를 지정한 TLS 접속으로 예시·8팀 health/Swagger·DB 권한·설정 일치를 검증한다.
+4. 최종 전환 시 쓰기를 잠깐 막고 최신 DB를 동기화한다. DNS 대기 중 옛 서버로 오는 요청을 새 서버에 전달하는 방식을 검토해 데이터가 갈라지지 않도록 한다.
+5. 검증된 새 IP를 사용자에게 전달해 A 레코드를 변경한다. 실제 DNS·외부 HTTPS·dev 배포를 확인한다.
+6. 전환이 확인된 뒤 시드니 Lightsail VM과 연결된 고정 IP 등을 정리한다. 데이터 백업은 보관하고 다른 서비스 자원을 삭제하지 않는다.
+
+## 업데이트 위치
+
+이 문서·작업 기록, `deploy/classroom-cd/` 도구·운영 README, SSH 안내, 로컬 서버 상태·known_hosts, 사용자 DNS, 11주차 Notion의 서버 주소·리전 설명을 실제 진행 단계에 맞춰 갱신한다. EKS 구축은 다음 주 범위를 유지한다.

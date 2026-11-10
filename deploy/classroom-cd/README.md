@@ -61,7 +61,9 @@ python deploy/classroom-cd/request-deploy.py --team team1 --image docker.minq.li
 
 ## 설치 도구와 검증
 
-최초 생성: `provision-lightsail.py` → 관리자 SSH에서 `bootstrap-ubuntu.sh` → `install-compose.py` → `install-controller.py` → `install-maintenance.py`. 비밀 파일을 인자로 전달하고 HTTPS 도메인으로 설치한다. 전체 재설정은 강사만 수행하며 팀별 배포에는 설치 도구를 재실행하지 않는다.
+최초 생성: `provision-lightsail.py --region 대상리전` → 관리자 SSH에서 `bootstrap-ubuntu.sh` → `install-compose.py` → `install-controller.py` → `install-maintenance.py`. 리전은 반드시 명시하며 `--plan-only`로 생성 전 점검할 수 있다. 비밀 파일을 인자로 전달하고 HTTPS 도메인으로 설치한다. 전체 재설정은 강사만 수행하며 팀별 배포에는 설치 도구를 재실행하지 않는다.
+
+2026-11-11 [서울 이전 작업](../../docs/LIGHTSAIL_SEOUL_MIGRATION.md): 앱·18개 DB·8팀 설정의 비공개 예비 백업을 확보했다. 실제 AWS 화면에서 강의 계정의 시드니 고정 프로젝트 제한이 확인됐고, 서울 사용에는 Paid plan 및 고급 기능 활성화가 필요하다. 계정 전환·서울 생성·시드니 정리는 아직 수행하지 않았으며 도메인도 현재 시드니를 가리킨다.
 
 최초 launch script는 Lightsail의 `/bin/sh` 래퍼에서 bash 전용 `pipefail`로 중단됐다. 생성 도구는 POSIX 구문으로 수정했고 실제 VM은 관리 SSH bootstrap으로 설치했다. 이전 cloud-init 오류 이력과 현재 정상 상태는 구분한다.
 

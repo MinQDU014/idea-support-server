@@ -137,3 +137,16 @@
 - 문서만 변경하므로 앱 테스트·이미지 빌드는 반복하지 않는다. 기존 deploy/dev-registry/index.html의 미커밋 포맷 변경을 보존하고 안내 문서만 [skip ci] 커밋으로 기록한다.
 
 업데이트 위치: docs/LIGHTSAIL_SSH_ACCESS.md, deploy/classroom-cd/README.md, Lightsail Networking의 SSH 규칙. 서울 이전을 진행할 때 새 IP·호스트 키·DNS와 리전별 설정을 함께 갱신해야 한다.
+
+## 2026-11-11 서울 이전 요청·예비 백업·계정 제한 확인
+
+- 사용자가 앱·DB·8팀 설정을 보존해 서울로 이전하고 새 고정 IP를 전달한 뒤, DNS 전환 확인 후 시드니 서버를 정리하도록 명시했다. 현재까지 새 서버 생성·DNS 변경·시드니 정리는 수행하지 않았다.
+- 서울 CloudShell을 열었으나 AWS 자체 화면에서 프로젝트가 시드니 ap-southeast-2에 할당돼 있고 다른 리전 사용에는 Paid plan 전환 후 고급 기능 활성화가 필요하다는 안내가 나왔다. 공식 프로젝트 리전 문서에서도 새 가입 방식의 지역 고정을 확인했다. 일반 계정의 리전 opt-in과 구분한다.
+- 계정 전환 화면은 업그레이드를 먼저 요구하며, 고급 기능 활성화 시 지출 한도가 삭제되고 되돌릴 수 없다고 명시한다. 계정 설정 변경은 수행하지 않았고 소유자가 직접 진행할 수 있도록 해당 화면을 열어 두었다. 사용자의 서울 이전 요청을 임의의 결제 조건 변경이나 새 관리 계정 생성 승인으로 확대하지 않는다.
+- prepare-migration.py로 운영 중 MySQL 18개 DB의 논리 백업, 예시+8팀 앱의 현재 digest·환경 설정, 팀별 비밀값·배포 토큰·인증서·Registry 인증 정보를 비공개 보관본으로 만들었다. 로컬 사본 해시가 일치하고 앱 9개·DB 18개·팀별 토큰 9개 포함을 확인했다. 실제 비밀값을 출력하거나 Git에 올리지 않았다.
+- 예비 보관본은 로컬 .local/seoul-migration/classroom-state.tar.gz에 있으며 소유자·SYSTEM 접근만 허용한다. 소스는 계속 운영하므로 이 파일이 최종 전환 백업이라는 뜻은 아니다. 실제 cutover 전 쓰기를 잠시 막고 최신 DB를 다시 동기화해야 한다.
+- provision-lightsail.py는 리전을 필수 인자로 받고 --plan-only로 생성 전 확인하도록 수정했다. 상태 파일도 리전별로 분리하고 초기 관리자 공개 키 등록은 기존 AWS 관리 키를 보존하도록 바꿨다. 서울 접근이 막힌 상태에서 다른 계정이나 리전으로 우회 생성하지 않았다.
+- 서울 이전 안내 문서와 README·SSH 안내를 갱신하고 다음 주 EKS 시드니 초안을 서울에 그대로 적용하지 않도록 표시했다. Python 구문 검사·CLI help·Git 공백 검사를 수행했다. 문서·사전 준비 코드만 [skip ci]로 기록하며 기존 HTML 변경은 보존한다.
+- 비밀값 없는 결과: docs/evidence/classroom-cd/seoul-migration-preparation.json. 화면 증거는 로컬 .local/evidence/seoul-region-unavailable.png 및 aws-advanced-activation-review.png에 저장했다.
+
+다음 단계: 사용자가 계정의 서울 사용 제한을 해제하거나 서울 사용 가능한 다른 계정을 지정하면 동일 사양·설정으로 복원한다. 새 IP의 TLS·9개 앱·DB 격리·설정 일치를 확인하고 사용자 DNS 변경 이후 실서비스 검증을 마친 뒤 시드니 Lightsail만 정리한다. 기존 Registry EC2·ECR과 다음 주 EKS 구축은 별도 범위다.

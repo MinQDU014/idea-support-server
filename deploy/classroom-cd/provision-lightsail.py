@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 ACCOUNT = '950177940921'
-REGION = 'ap-southeast-2'
+REGION = None
 NAME = 'classroom-dev-compose'
 
 
@@ -22,11 +22,16 @@ def aws(service, operation, **kwargs):
 
 
 def main():
+    global REGION
     parser = argparse.ArgumentParser()
+    parser.add_argument('--region', required=True, choices=['ap-northeast-2', 'ap-southeast-2'],
+                        help='Explicit destination; Seoul is ap-northeast-2. Never infer it from the AWS session.')
+    parser.add_argument('--plan-only', action='store_true', help='Check account, bundle and region without creating resources')
     parser.add_argument('--ssh-public-key', required=True)
     parser.add_argument('--management-cidr', required=True)
     parser.add_argument('--console-access', action='store_true', help='Temporarily allow AWS Lightsail browser SSH only when authorized')
     args = parser.parse_args()
+    REGION = args.region
     if not args.ssh_public_key.startswith('ssh-rsa ') or not args.management_cidr.endswith('/32'):
         raise ValueError('An administrator public key and single-IP /32 are required')
     identity = aws('sts', 'get-caller-identity')
@@ -41,6 +46,11 @@ def main():
     bundle = min(choices, key=lambda b: b['price'])
     blueprints = aws('lightsail', 'get-blueprints')['blueprints']
     blueprint = next(b for b in blueprints if b['isActive'] and b['blueprintId'] == 'ubuntu_24_04')
+    if args.plan_only:
+        print(json.dumps({'account': ACCOUNT, 'region': REGION, 'availability_zone': REGION+'a',
+                          'instance': NAME, 'bundle': bundle['bundleId'], 'monthly_bundle_usd': bundle['price'],
+                          'blueprint': blueprint['blueprintId'], 'created': False}, indent=2))
+        return
     instances = aws('lightsail', 'get-instances')['instances']
     # Lightsail wraps launch scripts with /bin/sh; use POSIX shell syntax here.
     user_data = '''#!/bin/sh
@@ -62,7 +72,7 @@ touch /opt/classroom-cd/docker-ready
     # Register the administrator's public key on the OS through first-boot setup.
     # No private key is sent to AWS, and no local AWS API credentials are required.
     key_setup = 'install -d -m 0700 -o ubuntu -g ubuntu /home/ubuntu/.ssh\n'
-    key_setup += "printf '%s\\n' " + shlex.quote(args.ssh_public_key.strip()) + ' > /home/ubuntu/.ssh/authorized_keys\n'
+    key_setup += "printf '%s\\n' " + shlex.quote(args.ssh_public_key.strip()) + ' >> /home/ubuntu/.ssh/authorized_keys\n'
     key_setup += 'chown ubuntu:ubuntu /home/ubuntu/.ssh/authorized_keys\nchmod 0600 /home/ubuntu/.ssh/authorized_keys\n'
     user_data = user_data.replace('export DEBIAN_FRONTEND=noninteractive\n', 'export DEBIAN_FRONTEND=noninteractive\n' + key_setup)
     if not any(i['name'] == NAME for i in instances):
@@ -99,7 +109,7 @@ touch /opt/classroom-cd/docker-ready
     state = {'account': ACCOUNT, 'region': REGION, 'instance': NAME,
              'bundle': bundle['bundleId'], 'monthly_bundle_usd': bundle['price'],
              'ram_gb': 8, 'static_ip': static['ipAddress'], 'private_ip': instance['privateIpAddress']}
-    Path('classroom-lightsail-state.json').write_text(json.dumps(state, indent=2)+'\n')
+    Path('classroom-lightsail-state-'+REGION+'.json').write_text(json.dumps(state, indent=2)+'\n')
     print(json.dumps(state, indent=2), flush=True)
 
 

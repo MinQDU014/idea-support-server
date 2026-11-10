@@ -1,0 +1,25 @@
+{
+  "date_kst": "2026-11-11",
+  "account": "950177940921",
+  "source_region": "ap-southeast-2",
+  "target_region": "ap-northeast-2",
+  "target_created": false,
+  "source_deleted": false,
+  "dns_changed": false,
+  "source_health": {
+    "status": "ok",
+    "database": "up",
+    "aiMode": "mock",
+    "seedReady": true
+  },
+  "blocker": "AWS new-experience project is restricted to Sydney; console requires Paid plan and advanced activation for Seoul.",
+  "backup": {
+    "team_count": 8,
+    "example_count": 1,
+    "database_count": 18,
+    "compressed_bytes": 365698,
+    "sha256": "73aa85762d97937c96330a94911c4a9116c0a04ec1740fc9e0367008a5aca44a",
+    "local_archive_verified": true,
+    "cutover_backup": false
+  }
+}
