@@ -126,3 +126,14 @@
 - 최종 gzip 무결성 검사에서 초기 백업이 실제 압축 형식이 아님을 발견했다. subprocess가 GzipFile의 파일 디스크립터에 직접 쓰면 Python 압축 경로를 거치지 않는 것이 원인이었다.
 - mysqldump의 stdout을 Python 파이프로 받아 gzip writer에 스트리밍하고 CRC 검증을 통과한 뒤 확정 파일로 저장하도록 수정·실제 적용했다. 초기 잘못된 파일은 root 전용 경로에서 .invalid로 구분했다.
 - 새 백업 20261110T145517Z.sql.gz(345691 bytes)는 gzip 무결성 검사와 18개 DB 포함 검사를 통과했다. 배포·DB 방화벽·백업 타이머 3개도 모두 active다. 복원 시험을 했다는 의미는 아니다. 비밀값 없는 결과는 docs/evidence/classroom-cd/maintenance-verification.json에 기록했다.
+
+## 2026-11-11 리전·Lightsail 상품 설명 및 관리자 SSH 안내
+
+- 사용자가 시드니 리전을 지적하고 서울이라고 정정했다. provision-lightsail.py의 REGION=ap-southeast-2와 실제 서버 위치가 일치함을 확인했다. 기존 ECR·Registry의 리전 설정을 재사용한 판단이 원인이며 사용자가 시드니를 지정한 것으로 해석하지 않는다. 서울 리전은 ap-northeast-2다. 현재 서버 이전·삭제·새 유료 자원 생성은 수행하지 않았다.
+- 사용자가 Containers·Databases 메뉴 사용 여부를 질문했다. 실제 구현은 Lightsail Instances 한 대 안의 Docker Compose 앱·MySQL이며 해당 관리형 서비스는 생성하지 않았음을 설명했다. VM의 Docker 컨테이너와 Lightsail Container Service를 구분한다. 관리형 전환은 아직 지시·적용하지 않았다.
+- 사용자가 브라우저 Connect using SSH와 외부 SSH 접속 방법을 요청했다. docs/LIGHTSAIL_SSH_ACCESS.md에 콘솔 경로, Allow Lightsail browser SSH/RDP의 위치, 현재 PowerShell 관리자 키·고정 IP 명령, 상태 확인·접속 오류를 정리하고 운영 README에서 연결했다.
+- 실제 현재 관리자 키와 저장된 서버 공개 키를 사용한 외부 SSH에서 hostname·uptime·배포 서비스 active를 확인했다. 로컬 개인 키 내용은 읽거나 출력하지 않았다. 저장된 ED25519 서버 공개 키 지문도 확인했다.
+- 브라우저 SSH는 이전 승인 작업 후 닫았던 상태를 기준으로 안내했으며 이번에는 방화벽을 변경하거나 브라우저 SSH 경로를 새로 열지 않았다. 학생에게 관리자 키를 공유하거나 학생 계정을 만들지 않았다.
+- 문서만 변경하므로 앱 테스트·이미지 빌드는 반복하지 않는다. 기존 deploy/dev-registry/index.html의 미커밋 포맷 변경을 보존하고 안내 문서만 [skip ci] 커밋으로 기록한다.
+
+업데이트 위치: docs/LIGHTSAIL_SSH_ACCESS.md, deploy/classroom-cd/README.md, Lightsail Networking의 SSH 규칙. 서울 이전을 진행할 때 새 IP·호스트 키·DNS와 리전별 설정을 함께 갱신해야 한다.

@@ -39,6 +39,7 @@ Lightsail **VM은 서버리스가 아니다**. 묶음 요금의 가상 서버이
 - 예시 DB `idea_team_dev`·`idea_team_main`, 팀1 `idea_team1_dev`·`idea_team1_main`처럼 dev/main을 별도 DB·사용자로 분리했다. 총 18개이며 main DB는 다음 주용으로 예약했다. 현재 EKS 앱은 없다.
 - MySQL은 사설 IP에만 bind한다. 공인 3306은 열지 않았다. Docker 방화벽은 사설 3306의 외부 인터페이스 유입을 default VPC CIDR로 제한한다. **VPC peering은 생성하지 않았다.**
 - SSH는 관리자 단일 IP만 허용한다. 승인받아 임시 사용한 Lightsail 브라우저 SSH 경로는 다시 닫았다. 학생 키·관리 계정·Bastion은 만들지 않는다.
+- 강사 접속은 [브라우저 SSH·PowerShell 외부 SSH 안내](../../docs/LIGHTSAIL_SSH_ACCESS.md)를 따른다. 2026-11-11 사용자 리전 정정: 목표는 서울이며 현재 실제 서버는 아직 시드니다. 이전은 수행하지 않았으므로 현재 IP와 이전 후 IP를 구분한다.
 - `classroom-deploy.service`: loopback 전용 수신기. TLS·팀별 인증, 이미지 경로 검증, 고정 명령 인자, 요청 크기 제한, 전역 배포 직렬화, 상태 확인·이전 이미지 복구를 수행한다. 결과는 팀별 `deployment-result.json`에 남긴다.
 - `classroom-db-firewall.service`: Docker 재기동 후 DB 방화벽 적용. `classroom-db-backup.timer`: 매일 18:00 UTC(한국 03:00), 서버 내 압축 SQL 백업 7일 보관. **같은 VM의 백업이므로 서버 유실 대비 외부 백업·복구 검증은 별도 과제다.**
 
