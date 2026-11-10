@@ -39,7 +39,7 @@ Lightsail **VM은 서버리스가 아니다**. 묶음 요금의 가상 서버이
 - 예시 DB `idea_team_dev`·`idea_team_main`, 팀1 `idea_team1_dev`·`idea_team1_main`처럼 dev/main을 별도 DB·사용자로 분리했다. 총 18개이며 main DB는 다음 주용으로 예약했다. 현재 EKS 앱은 없다.
 - MySQL은 사설 IP에만 bind한다. 공인 3306은 열지 않았다. Docker 방화벽은 사설 3306의 외부 인터페이스 유입을 default VPC CIDR로 제한한다. **VPC peering은 생성하지 않았다.**
 - SSH는 관리자 단일 IP만 허용한다. 승인받아 임시 사용한 Lightsail 브라우저 SSH 경로는 다시 닫았다. 학생 키·관리 계정·Bastion은 만들지 않는다.
-- 강사 접속은 [브라우저 SSH·PowerShell 외부 SSH 안내](../../docs/LIGHTSAIL_SSH_ACCESS.md)를 따른다. 2026-11-11 사용자 리전 정정: 목표는 서울이며 현재 실제 서버는 아직 시드니다. 이전은 수행하지 않았으므로 현재 IP와 이전 후 IP를 구분한다.
+- 강사 접속은 [브라우저 SSH·PowerShell 외부 SSH 안내](../../docs/LIGHTSAIL_SSH_ACCESS.md)를 따른다. 2026-11-11 사용자는 계정의 지역 제한을 확인한 뒤 서울 이전을 취소하고 현재 시드니 서버·IP를 유지하기로 했다.
 - `classroom-deploy.service`: loopback 전용 수신기. TLS·팀별 인증, 이미지 경로 검증, 고정 명령 인자, 요청 크기 제한, 전역 배포 직렬화, 상태 확인·이전 이미지 복구를 수행한다. 결과는 팀별 `deployment-result.json`에 남긴다.
 - `classroom-db-firewall.service`: Docker 재기동 후 DB 방화벽 적용. `classroom-db-backup.timer`: 매일 18:00 UTC(한국 03:00), 서버 내 압축 SQL 백업 7일 보관. **같은 VM의 백업이므로 서버 유실 대비 외부 백업·복구 검증은 별도 과제다.**
 
@@ -63,7 +63,7 @@ python deploy/classroom-cd/request-deploy.py --team team1 --image docker.minq.li
 
 최초 생성: `provision-lightsail.py --region 대상리전` → 관리자 SSH에서 `bootstrap-ubuntu.sh` → `install-compose.py` → `install-controller.py` → `install-maintenance.py`. 리전은 반드시 명시하며 `--plan-only`로 생성 전 점검할 수 있다. 비밀 파일을 인자로 전달하고 HTTPS 도메인으로 설치한다. 전체 재설정은 강사만 수행하며 팀별 배포에는 설치 도구를 재실행하지 않는다.
 
-2026-11-11 [서울 이전 작업](../../docs/LIGHTSAIL_SEOUL_MIGRATION.md): 앱·18개 DB·8팀 설정의 비공개 예비 백업을 확보했다. 실제 AWS 화면에서 강의 계정의 시드니 고정 프로젝트 제한이 확인됐고, 서울 사용에는 Paid plan 및 고급 기능 활성화가 필요하다. 계정 전환·서울 생성·시드니 정리는 아직 수행하지 않았으며 도메인도 현재 시드니를 가리킨다.
+2026-11-11 [서울 이전 검토 이력](../../docs/LIGHTSAIL_SEOUL_MIGRATION.md): 앱·18개 DB·8팀 설정의 비공개 예비 백업을 확보했으나, 계정의 시드니 고정 프로젝트 제한을 확인한 뒤 사용자가 이전을 취소했다. Paid plan 전환·고급 기능 활성화·서울 생성·시드니 삭제·DNS 변경은 하지 않는다. 현재 시드니 구성과 도메인을 유지한다.
 
 최초 launch script는 Lightsail의 `/bin/sh` 래퍼에서 bash 전용 `pipefail`로 중단됐다. 생성 도구는 POSIX 구문으로 수정했고 실제 VM은 관리 SSH bootstrap으로 설치했다. 이전 cloud-init 오류 이력과 현재 정상 상태는 구분한다.
 
