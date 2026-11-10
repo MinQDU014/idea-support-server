@@ -3,6 +3,7 @@ import argparse
 import base64
 import json
 import subprocess
+import shlex
 import time
 from pathlib import Path
 
@@ -40,11 +41,6 @@ def main():
     bundle = min(choices, key=lambda b: b['price'])
     blueprints = aws('lightsail', 'get-blueprints')['blueprints']
     blueprint = next(b for b in blueprints if b['isActive'] and b['blueprintId'] == 'ubuntu_24_04')
-    key_name = NAME + '-admin'
-    keys = aws('lightsail', 'get-key-pairs')['keyPairs']
-    if not any(k['name'] == key_name for k in keys):
-        aws('lightsail', 'import-key-pair', keyPairName=key_name,
-            publicKeyBase64=base64.b64encode(args.ssh_public_key.encode()).decode())
     instances = aws('lightsail', 'get-instances')['instances']
     user_data = '''#!/bin/bash
 set -euo pipefail
@@ -62,10 +58,16 @@ systemctl enable --now docker
 install -d -m 0700 /opt/classroom-cd
 touch /opt/classroom-cd/docker-ready
 '''
+    # Register the administrator's public key on the OS through first-boot setup.
+    # No private key is sent to AWS, and no local AWS API credentials are required.
+    key_setup = 'install -d -m 0700 -o ubuntu -g ubuntu /home/ubuntu/.ssh\n'
+    key_setup += "printf '%s\\n' " + shlex.quote(args.ssh_public_key.strip()) + ' > /home/ubuntu/.ssh/authorized_keys\n'
+    key_setup += 'chown ubuntu:ubuntu /home/ubuntu/.ssh/authorized_keys\nchmod 0600 /home/ubuntu/.ssh/authorized_keys\n'
+    user_data = user_data.replace('export DEBIAN_FRONTEND=noninteractive\n', 'export DEBIAN_FRONTEND=noninteractive\n' + key_setup)
     if not any(i['name'] == NAME for i in instances):
         aws('lightsail', 'create-instances', instanceNames=[NAME], availabilityZone=REGION+'a',
             blueprintId=blueprint['blueprintId'], bundleId=bundle['bundleId'],
-            keyPairName=key_name, userData=user_data, ipAddressType='ipv4',
+            userData=user_data, ipAddressType='ipv4',
             tags=[{'key': 'Environment', 'value': 'dev'}, {'key': 'Purpose', 'value': 'week11-team1-team8'}])
     # Only the administrator gets SSH. Never expose MySQL or the Docker API publicly.
     aws('lightsail', 'put-instance-public-ports', instanceName=NAME, portInfos=[

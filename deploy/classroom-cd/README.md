@@ -8,7 +8,7 @@
 
 - 강의용 AWS 계정은 `950177940921`, 리전은 `ap-southeast-2`다. 로컬 기본 AWS 프로필은 다른 계정이므로 이 환경을 생성하는 데 사용하지 않는다.
 - 로그인된 강의용 계정의 CloudShell 접근을 확인했다. Lightsail 고정 IP를 확보하면 사용자에게 전달하고 도메인 등록을 기다리며 서버 설치를 계속한다.
-- Lightsail의 import-key-pair는 RSA 공개 키를 요구한다. 전용 RSA 4096 관리자 키를 로컬 `.local/classroom-cd`에 생성하고 개인 키의 접근 권한을 제한했다. 기존 Registry의 Ed25519 키는 변경하지 않는다. 공개 키만 AWS에 전달하며 개인 키는 Git에 올리지 않는다.
+- 전용 RSA 4096 관리자 키를 로컬 `.local/classroom-cd`에 생성하고 개인 키의 접근 권한을 제한했다. Lightsail import-key-pair가 공개 키 형식을 거절해 서버 초기화 스크립트에서 관리자 공개 키를 등록하는 방식으로 바꿨다. 기존 Registry의 키는 변경하지 않는다. 공개 키만 AWS에 전달하며 개인 키는 Git에 올리지 않는다.
 - 구성이 적용된 뒤 이 문서와 `docs/DEV_REGISTRY_WORK_LOG.md`에 실제 주소·검증 결과를 갱신한다. 아직 생성·실행 성공으로 간주하지 않는다.
 
 ## 업데이트 위치
