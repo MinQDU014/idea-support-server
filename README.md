@@ -110,4 +110,6 @@ Cloud Build 파일을 사용하려면 `_CONTAINER_IMAGE` 치환값이 필요합�
 
 ## dev 이미지 저장소
 
-개발 브랜치는 `docker.minq.live/team1/idea-support-server`에 커밋별 이미지와 `dev` 태그를 올립니다. `main`의 ECR workflow는 그대로 유지합니다. [강의용 구성·팀별 설정](docs/DEV_REGISTRY.md), [서버 운영 파일](deploy/dev-registry/README.md), [적용·검증 기록](docs/DEV_REGISTRY_WORK_LOG.md)을 참고합니다. 이미지 업로드는 앱 컨테이너 실행과 별도입니다.
+개발 브랜치의 기본 예시는 `docker.minq.live/team/idea-support-server`이며, 학생은 GitHub의 `DEV_REGISTRY_NAMESPACE`만 `team1`~`team8`로 바꿉니다. dev push → 검사 → 이미지 업로드 순서로 동작하며 학생의 EC2·SSH 접속은 필요하지 않습니다. `main`의 ECR workflow는 그대로 유지합니다. [학생 업로드 안내](docs/DEV_REGISTRY.md), [서버 운영 파일](deploy/dev-registry/README.md), [적용·검증 기록](docs/DEV_REGISTRY_WORK_LOG.md)을 참고합니다. 이미지 업로드는 앱 컨테이너 실행과 별도입니다.
+
+실제 팀별 로그인 정보는 이 백엔드의 루트 `team-access.json`에 로컬로 보관합니다. `.gitignore`로 제외하며 GitHub에는 각 팀의 계정 두 값만 `dev` Environment Secrets에 등록합니다. 이 파일은 Spring resources에 넣거나 앱 이미지에 포함하지 않습니다.

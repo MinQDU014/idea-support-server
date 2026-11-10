@@ -54,8 +54,9 @@ jobs:
     timeout-minutes: 20
     environment: dev
     env:
-      REGISTRY_HOST: ${{ vars.DEV_REGISTRY_HOST }}
-      REGISTRY_NAMESPACE: ${{ vars.DEV_REGISTRY_NAMESPACE }}
+      REGISTRY_HOST: ${{ vars.DEV_REGISTRY_HOST || 'docker.minq.live' }}
+      # No team number is the instructor example; students set team1 through team8.
+      REGISTRY_NAMESPACE: ${{ vars.DEV_REGISTRY_NAMESPACE || 'team' }}
       REGISTRY_USER: ${{ secrets.DEV_REGISTRY_USER }}
       REGISTRY_PASSWORD: ${{ secrets.DEV_REGISTRY_PASSWORD }}
     steps:
@@ -69,7 +70,7 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$REGISTRY_HOST" =~ ^[a-zA-Z0-9][a-zA-Z0-9.-]*(:[0-9]+)?$ ]]
-          [[ "$REGISTRY_NAMESPACE" =~ ^team[1-8]$ ]]
+          [[ "$REGISTRY_NAMESPACE" =~ ^team([1-8])?$ ]]
           test -n "$REGISTRY_USER"
           test -n "$REGISTRY_PASSWORD"
           echo "CONTAINER_IMAGE=${REGISTRY_HOST}/${REGISTRY_NAMESPACE}/idea-support-server:dev-${GITHUB_SHA}" >> "$GITHUB_ENV"

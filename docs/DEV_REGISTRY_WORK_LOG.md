@@ -35,3 +35,29 @@
 - 월 비용 추정: USD 17.126 + 전송량·세금 등, 크레딧 적용 전. 정지 후에도 디스크·고정 IP 비용은 남으며 종료 시 보존한 디스크도 따로 정리한다.
 
 서버 인스턴스: `i-03e17334bb0666018`. CloudFormation 스택 `classroom-dev-registry`는 CREATE_COMPLETE다.
+
+## 2026-11-10 이미지 초기화와 학생 접속 검토
+
+- 사용자 요청으로 Registry에 업로드된 모든 이미지를 삭제했다. 삭제 전 앱 이미지 저장소 1개와 검증용 저장소 8개, 총 9개였다.
+- 실행 중인 Registry의 bind mount가 `/data/registry` → `/var/lib/registry`임을 확인했다. 쓰기를 막기 위해 서비스 두 개를 잠시 정지하고 해당 이미지 데이터만 비운 뒤 재시작했다.
+- 외부 HTTPS에서 catalog가 빈 배열이며 이전 9개 저장소의 태그 조회가 모두 404임을 확인했다. 인증 후 사이트 응답은 200이다. 이미지 데이터 공간은 약 632MiB에서 4KiB로 줄었다.
+- Registry·Caddy 운영 컨테이너, HTTPS 인증서, 로그인 계정은 유지했다. 기존 앱 업로드 검증 결과는 당시의 이력이며 현재 Registry에는 그 이미지가 없다. 다음 dev CI 업로드 시 새 이미지가 다시 생긴다.
+- [삭제 후 검증](evidence/dev-registry/registry-clear-verification.json).
+- 사용자는 학생별 직접 접속과 서로 다른 네트워크 사용을 확인했다. 권장안은 SSM 터널을 통한 SSH와 학생별 Linux 계정·키다. Bastion과 개인 키는 각각 접속 경로와 인증 수단으로 구분한다.
+- [학생 EC2 접속 안내](EC2_STUDENT_ACCESS.md)에 관리자 접속, 학생 키 생성, SSM을 통한 SSH의 사전 조건과 예시를 정리했다. 학생용 SSM 역할·IAM 권한·Linux 계정은 아직 생성·적용하지 않았다.
+- 현재 서버에서 공개 키 인증 활성화와 비밀번호 인증 비활성화, SSM Agent 서비스가 enabled임을 확인했다. Agent 존재만으로 학생용 SSM 접근이 준비된 것은 아니다.
+- 기존 화면 파일의 별도 미커밋 변경은 수정하지 않았다. 이번 정리 후 업로드 검사를 다시 실행해 이미지를 재생성하지 않는다.
+
+업데이트 위치: 이미지 초기화 결과는 이 문서와 검증 JSON, 접속 안내는 `EC2_STUDENT_ACCESS.md`. 실제 학생 접속 적용에는 학생별 AWS 로그인·공개 키와 허용 작업 범위가 필요하다.
+
+## 2026-11-10 최종 단순화 — GitHub에서 Registry로 업로드
+
+- 사용자가 학생용 SSH·SSM 구성을 취소하고 기존 Registry 업로드 실습으로 단순화했다. 학생용 AWS 로그인·Linux 계정·Bastion은 생성하지 않는다.
+- 번호 없는 `team/idea-support-server`를 강의 예시로 정했다. 학생은 같은 workflow에서 `DEV_REGISTRY_NAMESPACE=team1`~`team8` 중 자기 팀을 설정한다. main → ECR 구성은 변경하지 않았다.
+- dev workflow의 namespace 검증에 예시 `team`을 추가했다. Registry 호스트 기본값은 `docker.minq.live`, namespace 기본값은 `team`이다. 실제 GitHub dev Environment도 `team`으로 바꿨다.
+- 예시 경로와 학생 경로는 이미지 이름이며 로그인 계정과 별개다. 기존 발급 계정으로 예시 이미지를 올리며, 추가 계정이나 서버는 만들지 않는다.
+- 제공된 실제 `team-access.json`을 백엔드 루트에 복사하고 원본과 일치함을 확인했다. 모든 경로의 해당 파일명을 `.gitignore`로 제외했다. 실제 비밀번호는 공개 문서·소스에 기록하지 않으며 공개 템플릿에는 가짜 값만 넣었다. CI는 팀별 GitHub Secrets를 사용한다.
+- 조회 화면에 강의 예시와 1팀~8팀 선택을 추가하고 기본 선택을 예시로 변경했다. 기존 로컬 HTML 포맷 변경은 보존하고 이번 기능 변경만 Git에 반영한다.
+- `actionlint`와 변경 공백 검사를 통과했다. 로컬 자격 증명이 Git에서 제외되는 것을 확인했다. 실제 CI 실행·Registry 확인 결과는 아래에 이어 기록한다.
+
+업데이트 위치: `.github/workflows/dev-registry.yaml`, GitHub dev Environment, `deploy/dev-registry/index.html`, `docs/DEV_REGISTRY.md`, 로컬 전용 루트 `team-access.json`. 학생 접속 방식 문서는 최종 결정에 맞춰 정리했다.

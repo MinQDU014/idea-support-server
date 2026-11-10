@@ -1,0 +1,10 @@
+{
+  "team1": { "username": "team1", "password": "REPLACE_WITH_ASSIGNED_PASSWORD" },
+  "team2": { "username": "team2", "password": "REPLACE_WITH_ASSIGNED_PASSWORD" },
+  "team3": { "username": "team3", "password": "REPLACE_WITH_ASSIGNED_PASSWORD" },
+  "team4": { "username": "team4", "password": "REPLACE_WITH_ASSIGNED_PASSWORD" },
+  "team5": { "username": "team5", "password": "REPLACE_WITH_ASSIGNED_PASSWORD" },
+  "team6": { "username": "team6", "password": "REPLACE_WITH_ASSIGNED_PASSWORD" },
+  "team7": { "username": "team7", "password": "REPLACE_WITH_ASSIGNED_PASSWORD" },
+  "team8": { "username": "team8", "password": "REPLACE_WITH_ASSIGNED_PASSWORD" }
+}

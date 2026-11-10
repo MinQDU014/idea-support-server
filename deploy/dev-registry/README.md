@@ -1,6 +1,6 @@
 # EC2의 공유 dev Registry
 
-최종 구성은 **EC2 t3.micro 한 대 + Registry 한 개 + Caddy 한 개**, 암호화한 gp3 40GiB다. 팀은 `team1/idea-support-server`~`team8/idea-support-server` 이름으로 구분한다. 사용자 요청에 따라 비용과 수업 범위에 맞게 단순화했다.
+최종 구성은 **EC2 t3.micro 한 대 + Registry 한 개 + Caddy 한 개**, 암호화한 gp3 40GiB다. 번호 없는 `team/idea-support-server`는 강의 예시이며 학생은 `team1/idea-support-server`~`team8/idea-support-server`를 사용한다. 학생은 EC2 접속 없이 각 팀 GitHub의 dev CI로 이미지를 업로드한다.
 
 ## 현재 서버
 
@@ -16,6 +16,8 @@
 ## 계정과 데이터
 
 `team1`~`team8` 로그인 계정을 발급했다. 자격 증명은 서버의 `/opt/classroom-registry/team-access.json`에 root 전용 권한으로 보관한다. 설치 재실행은 기존 계정을 유지한다. 모든 사용자가 모든 팀 이미지에 접근할 수 있으며 경로별 권한 분리는 하지 않는다.
+
+강사의 백엔드 로컬 복사본은 루트 `team-access.json`이며 `.gitignore`로 제외한다. GitHub에는 가짜 값만 넣은 `team-access.example.json`을 올린다. CI는 로컬 파일 대신 각 팀 `dev` Environment의 Secrets를 사용한다. 로그인 계정과 이미지 namespace는 별개이므로 예시 `team` 경로에 별도 로그인 계정을 새로 만들 필요는 없다.
 
 학급 밖의 신뢰하지 않는 팀끼리 사용하는 구성이 아니다. 별도 권한이 필요해지면 token auth 또는 Harbor 같은 관리 기능을 검토한다.
 

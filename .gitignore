@@ -50,3 +50,6 @@ demo-web/test-results/
 
 # Registry helper cache
 deploy/dev-registry/__pycache__/
+
+# Classroom registry passwords are kept locally, never committed.
+team-access.json

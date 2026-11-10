@@ -1,0 +1,19 @@
+{
+  "checked_at_utc": "2026-11-10T08:14:38.757254+00:00",
+  "url": "https://docker.minq.live",
+  "repositories_before": [
+    "team1/idea-support-server",
+    "team1/registry-smoke",
+    "team2/registry-smoke",
+    "team3/registry-smoke",
+    "team4/registry-smoke",
+    "team5/registry-smoke",
+    "team6/registry-smoke",
+    "team7/registry-smoke",
+    "team8/registry-smoke"
+  ],
+  "repositories_after": [],
+  "old_repositories_return_404": 9,
+  "ui_http_status": 200,
+  "scope": "All uploaded registry images removed; operating Registry/Caddy images, accounts and TLS data preserved"
+}
