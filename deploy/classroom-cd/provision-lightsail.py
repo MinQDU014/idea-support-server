@@ -26,7 +26,7 @@ def main():
     parser.add_argument('--ssh-public-key', required=True)
     parser.add_argument('--management-cidr', required=True)
     args = parser.parse_args()
-    if not args.ssh_public_key.startswith('ssh-ed25519 ') or not args.management_cidr.endswith('/32'):
+    if not args.ssh_public_key.startswith('ssh-rsa ') or not args.management_cidr.endswith('/32'):
         raise ValueError('An administrator public key and single-IP /32 are required')
     identity = aws('sts', 'get-caller-identity')
     if identity['Account'] != ACCOUNT:
