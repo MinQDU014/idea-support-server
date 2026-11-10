@@ -19,7 +19,12 @@
 - 실제 외부 HTTPS에서 같은 8팀 동시 검사 통과: 8.93초. [검증 결과](evidence/dev-registry/registry-verification.json).
 - team1 계정으로 team2 이미지도 읽을 수 있는 공유 접근 특성을 확인했다. 검증 이미지는 `teamN/registry-smoke:verify-*`이며 앱 이미지가 아니다.
 - 작은 OCI 이미지의 기본 동작·동시성 확인이며, 실제 앱 8개 전체 빌드 부하나 장시간 성능을 보장하는 시험은 아니다.
-- GitHub Actions 실제 실행과 앱 이미지 업로드 결과는 후속 확인 후 기록한다. 기기 설치·연결 검증은 사용자 지시에 따라 생략한다.
+- 설치 도구를 기존 서버에 다시 실행해도 계정·이미지·인증서와 pinned digest를 유지했다. 재실행 후 실제 HTTPS에서 기존 앱 이미지 digest가 그대로인지 확인했다.
+- [실제 GitHub Actions](https://github.com/MinQDU014/idea-support-server/actions/runs/42754201601) 성공: 스타일 검사와 테스트 189개 통과, 실패·건너뜀 0. 테스트 작업의 Gradle 실행 1분 56초, Jib 작업 2분 3초.
+- 앱 이미지 `docker.minq.live/team1/idea-support-server:dev-5138d05492002dd81773e3cc61e6a2893d132479`와 `dev`의 digest가 일치했다. amd64·arm64 두 플랫폼의 이미지 설정에서 dev 프로필을 확인했다. [앱 이미지 검증](evidence/dev-registry/app-image-verification.json).
+- 이미지 digest: `sha256:d41f6c043d736c8b5b1b836b8a3b2e74627d06a24f7ec0fd240203bfaace040f`. 앱 컨테이너 실행은 이번 범위에 포함하지 않았다.
+- 10주차 CI Notion 페이지에 브랜치 기준 수정, 공유 Registry 설명, 실제 주소, 팀별 이미지 표, Mermaid 구성도와 CD 연결 방법을 반영했다.
+- 연결 기기 설치·확인은 사용자 지시에 따라 생략했다. 이후 문서·증거만 기록하는 커밋에는 `[skip ci]`를 사용해 같은 앱 테스트와 이미지 생성을 반복하지 않는다.
 
 ## 업데이트 위치
 
@@ -28,3 +33,5 @@
 - 이미지: EC2 `/data/registry`, 인증서: `/data/caddy`.
 - 강의: `docs/DEV_REGISTRY.md`와 10주차 CI Notion 페이지.
 - 월 비용 추정: USD 17.126 + 전송량·세금 등, 크레딧 적용 전. 정지 후에도 디스크·고정 IP 비용은 남으며 종료 시 보존한 디스크도 따로 정리한다.
+
+서버 인스턴스: `i-03e17334bb0666018`. CloudFormation 스택 `classroom-dev-registry`는 CREATE_COMPLETE다.

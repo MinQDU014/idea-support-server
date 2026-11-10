@@ -1,0 +1,21 @@
+{
+  "image": "docker.minq.live/team1/idea-support-server",
+  "tags": [
+    "dev",
+    "dev-5138d05492002dd81773e3cc61e6a2893d132479"
+  ],
+  "digest": "sha256:d41f6c043d736c8b5b1b836b8a3b2e74627d06a24f7ec0fd240203bfaace040f",
+  "platforms": [
+    {
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    {
+      "architecture": "arm64",
+      "os": "linux"
+    }
+  ],
+  "dev_profile_confirmed": true,
+  "workflow": "https://github.com/MinQDU014/idea-support-server/actions/runs/42754201601",
+  "workflow_conclusion": "success"
+}
