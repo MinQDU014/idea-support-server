@@ -14,7 +14,7 @@ output = Path('/tmp/classroom-cd-temporary-access.zip')
 with zipfile.ZipFile(output, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
     archive.writestr('tempkey', details['privateKey'])
     archive.writestr('tempkey-cert.pub', details['certKey'])
-    archive.writestr('connection.json', json.dumps({k: details[k] for k in ['username', 'ipAddress', 'expiresAt', 'hostKeys']}))
+    archive.writestr('connection.json', json.dumps({k: details.get(k) for k in ['username', 'ipAddress', 'expiresAt', 'hostKeys']}))
 output.chmod(0o600)
 print('Prepared short-lived access file:', str(output))
 print('Keys are not printed. Use both private key and certificate from the allowed administrator IP.')

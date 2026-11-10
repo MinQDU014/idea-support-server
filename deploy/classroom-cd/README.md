@@ -12,6 +12,8 @@
 - 구성이 적용된 뒤 이 문서와 `docs/DEV_REGISTRY_WORK_LOG.md`에 실제 주소·검증 결과를 갱신한다. 아직 생성·실행 성공으로 간주하지 않는다.
 - Lightsail VM 생성 요청이 접수됐다. pending 중에는 방화벽 변경 API가 거절되므로 running 확인 후 방화벽·고정 IP 연결 순서로 처리한다.
 - 실제 서버 `classroom-dev-compose`, 번들 `large_3_2` (8GB, USD44/월), 고정 IP `13.55.177.148`, 사설 IP `172.26.7.237`를 확인했다. 관리자 IP 외 SSH와 공인 MySQL은 허용하지 않았다. 사용자에게 고정 IP를 전달하고 도메인 등록 응답을 기다리는 중이다.
+- 사용자가 `daelim` A 레코드를 `13.55.177.148`에 연결했다. 기존 minq.live 도메인 기준 `daelim.minq.live`의 DNS를 확인한다. 자동 CD는 현재 예시 GitHub 저장소에 먼저 연결하도록 확정했다.
+- 관리 SSH는 관리자 IP와 AWS가 제공하는 `lightsail-connect` 소스에서만 허용한다. 후자는 기존 AWS 관리자 계정의 브라우저 SSH용이며 학생에게 관리자 로그인이나 개인 키를 배포하지 않는다.
 
 ## 업데이트 위치
 

@@ -86,7 +86,7 @@ touch /opt/classroom-cd/docker-ready
     # Lightsail rejects firewall changes while an instance is pending.
     # Only the administrator gets SSH. Never expose MySQL or Docker API publicly.
     aws('lightsail', 'put-instance-public-ports', instanceName=NAME, portInfos=[
-        {'fromPort': 22, 'toPort': 22, 'protocol': 'tcp', 'cidrs': [args.management_cidr]},
+        {'fromPort': 22, 'toPort': 22, 'protocol': 'tcp', 'cidrs': [args.management_cidr], 'cidrListAliases': ['lightsail-connect']},
         {'fromPort': 80, 'toPort': 80, 'protocol': 'tcp', 'cidrs': ['0.0.0.0/0']},
         {'fromPort': 443, 'toPort': 443, 'protocol': 'tcp', 'cidrs': ['0.0.0.0/0']},
     ])
