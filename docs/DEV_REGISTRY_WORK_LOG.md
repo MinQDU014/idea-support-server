@@ -61,3 +61,12 @@
 - `actionlint`와 변경 공백 검사를 통과했다. 로컬 자격 증명이 Git에서 제외되는 것을 확인했다. 실제 CI 실행·Registry 확인 결과는 아래에 이어 기록한다.
 
 업데이트 위치: `.github/workflows/dev-registry.yaml`, GitHub dev Environment, `deploy/dev-registry/index.html`, `docs/DEV_REGISTRY.md`, 로컬 전용 루트 `team-access.json`. 학생 접속 방식 문서는 최종 결정에 맞춰 정리했다.
+
+### 최종 적용·검증
+
+- 기능 커밋 `ff4a3808955f1ab9a35e5880580a2ce52054bb24`를 원격 dev에 반영했다. [실제 Actions](https://github.com/MinQDU014/idea-support-server/actions/runs/42821885235)는 검사·테스트 작업 2분 58초, 이미지 업로드 작업 1분 53초로 모두 성공했다.
+- 실제 예시 이미지 `docker.minq.live/team/idea-support-server:dev`와 `dev-ff4a3808955f1ab9a35e5880580a2ce52054bb24`를 확인했다. 두 태그의 digest는 `sha256:a56a12ab1f4af0035f3bbe8646a2b9d6f5e0284a4526068a49199e8974bb0562`로 같다. amd64·arm64 두 플랫폼 모두 dev 프로필이다.
+- 현재 catalog에는 예시 저장소 1개가 있다. 학생 저장소는 첫 이미지 업로드 시 생긴다. 검증용 registry-smoke 이미지를 다시 만들지 않았다.
+- 학생 8개 계정 모두 외부 HTTPS에서 예시 태그를 정상 조회했다. 새 조회 화면은 HTTP 200이며 기본 선택은 강의 예시다. [비밀값 없는 검증 결과](evidence/dev-registry/classroom-upload-verification.json).
+- 실제 계정 파일은 Git에 추적되지 않고 `.gitignore`로 제외된다. 공개 파일의 가짜 비밀번호 템플릿과 구분했다. 백엔드 앱 실행·학생 PC 설치 검사는 이 작업에서 수행하지 않았다.
+- 마지막 결과 문서·검증 JSON만 `[skip ci]` 커밋으로 기록해 같은 앱 빌드와 이미지 업로드를 반복하지 않는다. 기존 로컬 HTML 포맷 변경은 미커밋 상태로 보존했다.

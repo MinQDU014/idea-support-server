@@ -1,0 +1,36 @@
+{
+  "checked_at_utc": "2026-11-10T13:14:44.293483+00:00",
+  "registry": "https://docker.minq.live",
+  "source_commit": "ff4a3808955f1ab9a35e5880580a2ce52054bb24",
+  "ci_run": "https://github.com/MinQDU014/idea-support-server/actions/runs/42821885235",
+  "ci_conclusion": "success",
+  "jobs": [
+    {
+      "name": "Dev Lint and Test",
+      "conclusion": "success"
+    },
+    {
+      "name": "Push dev image to Registry",
+      "conclusion": "success"
+    }
+  ],
+  "example_image": "team/idea-support-server",
+  "tags": [
+    "dev",
+    "dev-ff4a3808955f1ab9a35e5880580a2ce52054bb24"
+  ],
+  "digest": "sha256:a56a12ab1f4af0035f3bbe8646a2b9d6f5e0284a4526068a49199e8974bb0562",
+  "platforms": [
+    "amd64",
+    "arm64"
+  ],
+  "spring_profile": "dev",
+  "repositories": [
+    "team/idea-support-server"
+  ],
+  "student_accounts_checked": 8,
+  "student_account_reads_succeeded": true,
+  "ui_status": 200,
+  "local_credential_file_ignored": true,
+  "scope": "Real dev CI published the example image; students use their own namespace on first push. No application runtime or student EC2 access provisioned."
+}

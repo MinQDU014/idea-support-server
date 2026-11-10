@@ -50,6 +50,8 @@ flowchart LR
 
 첫 이미지가 올라갈 때 경로가 생기므로 빈 레포 8개를 미리 만들 필요는 없습니다. 조회 화면에는 강의 예시와 아직 이미지가 없는 1팀~8팀을 모두 표시합니다. 번호가 없는 `team`은 이 저장소의 기본 예시이며, 학생은 자기 팀 번호를 사용합니다.
 
+현재 강의 예시 `docker.minq.live/team/idea-support-server:dev`는 실제 dev CI로 업로드한 상태입니다. [검사·업로드 실행](https://github.com/MinQDU014/idea-support-server/actions/runs/42821885235)과 [외부 HTTPS 검증 결과](evidence/dev-registry/classroom-upload-verification.json)를 확인할 수 있습니다. 학생 경로는 각 팀이 처음 올릴 때 생성됩니다.
+
 팀별 로그인 계정은 구분하지만 **팀 경로는 접근 권한을 나누는 기능이 아닙니다.** 로그인한 계정은 다른 팀 이미지도 읽고 올릴 수 있습니다. 이번 실습은 서로 신뢰하는 학급의 공유 저장소를 기준으로 합니다. Registry 한 개의 기본 로그인 인증만으로 ECR IAM과 같은 팀별 권한이 생기지는 않습니다.
 
 ## GitHub의 dev 설정
