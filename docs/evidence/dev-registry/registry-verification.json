@@ -1,0 +1,66 @@
+{
+  "authentication": "pass",
+  "ui": "pass",
+  "concurrent_pushes": 8,
+  "seconds": 8.93,
+  "shared_cross_team_access": true,
+  "scope": "Eight concurrent 2 MiB OCI layer uploads and manifest reads; not application CI load testing",
+  "images": [
+    {
+      "team": "team1",
+      "repository": "team1/registry-smoke",
+      "tag": "verify-20261110-040619",
+      "digest": "sha256:f21048d1e40387d79a5f82e9e797ab286ec2774903fd7f960ff9677e4cfb2e90",
+      "layer_bytes": 2099200
+    },
+    {
+      "team": "team2",
+      "repository": "team2/registry-smoke",
+      "tag": "verify-20261110-040619",
+      "digest": "sha256:8aa2b2aba8281a2e905f2298074a63e74f3e8145129f72eda0db309a3321571b",
+      "layer_bytes": 2099200
+    },
+    {
+      "team": "team3",
+      "repository": "team3/registry-smoke",
+      "tag": "verify-20261110-040619",
+      "digest": "sha256:5662f7ef2a718e4e21a0ceb4108f007f71bd8fb12752fd087a0a36cdc41e1f41",
+      "layer_bytes": 2099200
+    },
+    {
+      "team": "team4",
+      "repository": "team4/registry-smoke",
+      "tag": "verify-20261110-040619",
+      "digest": "sha256:b3ff748eca671c35794002fe22044e3aab8b65e28c505e86e273d0a7d73cc0c3",
+      "layer_bytes": 2099200
+    },
+    {
+      "team": "team5",
+      "repository": "team5/registry-smoke",
+      "tag": "verify-20261110-040619",
+      "digest": "sha256:b84923841b508abdad675763bf998ef73c8e9f6be76ec8894b394360d1272e3a",
+      "layer_bytes": 2099200
+    },
+    {
+      "team": "team6",
+      "repository": "team6/registry-smoke",
+      "tag": "verify-20261110-040619",
+      "digest": "sha256:f110a6633675f181b675fa6b72e8dc1d68e4dbdfc6b9fb47e9bcaf03ba42c842",
+      "layer_bytes": 2099200
+    },
+    {
+      "team": "team7",
+      "repository": "team7/registry-smoke",
+      "tag": "verify-20261110-040619",
+      "digest": "sha256:ddecb35f916ef1ec7db471ac73a252762b899a04f50cf0bdc3ff50c9936d7939",
+      "layer_bytes": 2099200
+    },
+    {
+      "team": "team8",
+      "repository": "team8/registry-smoke",
+      "tag": "verify-20261110-040619",
+      "digest": "sha256:cb52ccc7a8a4646d50748a4e46e17619dfea555ef7a5e8e9b04d9aeee8d0f784",
+      "layer_bytes": 2099200
+    }
+  ]
+}

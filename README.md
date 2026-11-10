@@ -94,7 +94,7 @@ Windows의 Java 임시 경로 문제를 피하는 설정은 실행·테스트 �
 ## 컨테이너 빌드
 
 기본 이미지명은 `local/idea-support-server`입니다. 원격 대상은 `containerImage` 또는 `CONTAINER_IMAGE`로 지정합니다.
-Cloud Build 파일을 사용하려면 `_CONTAINER_IMAGE` 치환값이 필요합니다. 이번 작업에서 원격 업로드·배포는 하지 않았습니다.
+Cloud Build 파일을 사용하려면 `_CONTAINER_IMAGE` 치환값이 필요합니다. `main`은 기존 ECR을 사용하고 `dev`에는 공유 Registry 업로드를 추가했습니다. 적용 결과는 [개발 Registry 작업 기록](docs/DEV_REGISTRY_WORK_LOG.md)을 확인합니다.
 
 ## 업데이트 위치
 
@@ -107,3 +107,7 @@ Cloud Build 파일을 사용하려면 `_CONTAINER_IMAGE` 치환값이 필요합�
 - API 변경 시 `docs/API_SPEC.md`·Swagger·`docs/student-guide`의 흐름 안내, DB 변경 시 `docs/schema/idea-support.dbml`과 온라인 ERD를 함께 갱신합니다. 구성 변경은 `docs/BACKEND_PLAN.md`, 작업 결과는 `docs/WORK_LOG.md`에 기록합니다.
 
 실제 `.env`는 Git과 JAR에서 제외합니다. 실행 파일만 옮길 때는 환경변수로 설정하거나 프로젝트의 resources 환경 파일 경로를 유지합니다. 키 발급·실제 연결 결과는 [Gemini 연결 안내](docs/GEMINI_SETUP.md)를 참고합니다.
+
+## dev 이미지 저장소
+
+개발 브랜치는 `docker.minq.live/team1/idea-support-server`에 커밋별 이미지와 `dev` 태그를 올립니다. `main`의 ECR workflow는 그대로 유지합니다. [강의용 구성·팀별 설정](docs/DEV_REGISTRY.md), [서버 운영 파일](deploy/dev-registry/README.md), [적용·검증 기록](docs/DEV_REGISTRY_WORK_LOG.md)을 참고합니다. 이미지 업로드는 앱 컨테이너 실행과 별도입니다.

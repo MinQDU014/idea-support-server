@@ -47,3 +47,6 @@ demo-web/node_modules/
 demo-web/dist/
 demo-web/test-results/
 
+
+# Registry helper cache
+deploy/dev-registry/__pycache__/

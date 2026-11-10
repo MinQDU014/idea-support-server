@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: One small EC2 host for one shared dev registry, eight team namespaces and a read-only UI.
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+  PublicSubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Existing subnet with a route to an internet gateway
+  UbuntuAmi:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id
+  InstanceType:
+    Type: String
+    Default: t3.micro
+    AllowedValues: [t3.micro, t3.small, t3.medium]
+  HttpsCidr:
+    Type: String
+    Description: HTTPS client CIDR; hosted GitHub runners need reachable HTTPS. Use a fixed-egress runner for a narrow rule.
+    AllowedPattern: '(\d{1,3}\.){3}\d{1,3}/\d{1,2}'
+  DiskGiB:
+    Type: Number
+    Default: 40
+    MinValue: 40
+    MaxValue: 500
+  ManagementCidr:
+    Type: String
+    Description: Administrator public IPv4 /32 for SSH only
+    AllowedPattern: '(\d{1,3}\.){3}\d{1,3}/32'
+  SshPublicKey:
+    Type: String
+    Description: Administrator public SSH key; never supply a private key
+Resources:
+  RegistrySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Dev registry HTTPS; SSH restricted to administrator IPv4
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: !Ref HttpsCidr
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref ManagementCidr
+      Tags:
+        - {Key: Name, Value: classroom-dev-registry}
+        - {Key: Environment, Value: dev}
+  RegistryKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: !Sub ${AWS::StackName}-admin
+      PublicKeyMaterial: !Ref SshPublicKey
+  RegistryHost:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref UbuntuAmi
+      InstanceType: !Ref InstanceType
+      CreditSpecification:
+        CPUCredits: standard
+      KeyName: !Ref RegistryKeyPair
+      MetadataOptions:
+        HttpTokens: required
+        HttpEndpoint: enabled
+      NetworkInterfaces:
+        - DeviceIndex: '0'
+          AssociatePublicIpAddress: true
+          SubnetId: !Ref PublicSubnetId
+          GroupSet: [!Ref RegistrySecurityGroup]
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeType: gp3
+            VolumeSize: !Ref DiskGiB
+            Encrypted: true
+            DeleteOnTermination: false
+      Tags:
+        - {Key: Name, Value: classroom-dev-registry}
+        - {Key: Environment, Value: dev}
+        - {Key: Purpose, Value: week10-team1-team8}
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y ca-certificates curl python3 openssl apache2-utils
+          install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+          chmod a+r /etc/apt/keyrings/docker.asc
+          . /etc/os-release
+          printf 'Types: deb\nURIs: https://download.docker.com/linux/ubuntu\nSuites: %s\nComponents: stable\nArchitectures: amd64\nSigned-By: /etc/apt/keyrings/docker.asc\n' "$VERSION_CODENAME" > /etc/apt/sources.list.d/docker.sources
+          apt-get update
+          apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+          systemctl enable --now docker
+          install -d -m 0700 /opt/classroom-registry
+          touch /opt/classroom-registry/docker-ready
+  RegistryAddress:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      Tags:
+        - {Key: Name, Value: classroom-dev-registry}
+  RegistryAddressAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt RegistryAddress.AllocationId
+      InstanceId: !Ref RegistryHost
+Outputs:
+  InstanceId:
+    Value: !Ref RegistryHost
+  PublicIp:
+    Value: !Ref RegistryAddress
+  SecurityGroupId:
+    Value: !Ref RegistrySecurityGroup
+  ManageWithSsh:
+    Value: !Sub ssh -i classroom-registry ubuntu@${RegistryAddress}
