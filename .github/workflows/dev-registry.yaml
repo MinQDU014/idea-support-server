@@ -76,8 +76,8 @@ jobs:
           echo "CONTAINER_IMAGE=${REGISTRY_HOST}/${REGISTRY_NAMESPACE}/idea-support-server:dev-${GITHUB_SHA}" >> "$GITHUB_ENV"
       - run: chmod +x ./gradlew
       - name: Build and push dev image
-        run: ./gradlew jib -PprojectDataImageTargetEnv=dev -Djib.to.tags=dev --console=plain
+        run: ./gradlew jib -PprojectDataImageTargetEnv=dev -Djib.to.tags=latest --console=plain
       - name: Show image location
         shell: bash
         run: |
-          printf '### Dev image\n\n`%s`\n\nThis workflow stores the image; it does not start the application.\n' "$CONTAINER_IMAGE" >> "$GITHUB_STEP_SUMMARY"
+          printf '### Dev image\n\nLatest: `%s/%s/idea-support-server:latest`\n\nCommit: `%s`\n\nThis workflow stores the image; it does not start the application.\n' "$REGISTRY_HOST" "$REGISTRY_NAMESPACE" "$CONTAINER_IMAGE" >> "$GITHUB_STEP_SUMMARY"

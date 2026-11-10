@@ -70,3 +70,14 @@
 - 학생 8개 계정 모두 외부 HTTPS에서 예시 태그를 정상 조회했다. 새 조회 화면은 HTTP 200이며 기본 선택은 강의 예시다. [비밀값 없는 검증 결과](evidence/dev-registry/classroom-upload-verification.json).
 - 실제 계정 파일은 Git에 추적되지 않고 `.gitignore`로 제외된다. 공개 파일의 가짜 비밀번호 템플릿과 구분했다. 백엔드 앱 실행·학생 PC 설치 검사는 이 작업에서 수행하지 않았다.
 - 마지막 결과 문서·검증 JSON만 `[skip ci]` 커밋으로 기록해 같은 앱 빌드와 이미지 업로드를 반복하지 않는다. 기존 로컬 HTML 포맷 변경은 미커밋 상태로 보존했다.
+
+## 2026-11-10 최신 이미지 태그를 latest로 정정
+
+- 사용자가 dev 브랜치에서도 가장 최근 이미지는 `latest`여야 한다고 정정했다. dev는 브랜치·앱 프로필로 유지하고, 최신 이미지 별칭은 `latest`로 변경했다. 버전 확인용 `dev-커밋전체번호` 태그는 함께 유지한다.
+- 최신 커밋 `9c9a1b9`에서 변경된 강의 문서·작업 기록·검증 JSON을 읽고 수정했다.
+- dev workflow의 Jib 추가 태그를 `dev`에서 `latest`로 바꾸고 Actions 요약에 최신 주소와 커밋별 주소를 모두 표시하도록 수정했다. README와 현재 강의 안내의 팀 1~8·예시 태그와 pull 명령도 갱신했다.
+- 기존에 검사·업로드를 통과한 멀티 플랫폼 manifest를 Registry API로 `latest`에 등록했다. 외부 HTTPS에서 기존 이미지와 같은 digest인 `sha256:a56a12ab1f4af0035f3bbe8646a2b9d6f5e0284a4526068a49199e8974bb0562`를 반환함을 확인했다. [latest 검증 결과](evidence/dev-registry/latest-tag-verification.json).
+- 기존 `dev` 태그는 이전 이력으로 남고 앞으로 workflow는 `latest`와 커밋별 태그를 갱신한다. amd64·arm64 이미지와 dev 프로필은 기존 검증 이미지와 동일하다.
+- actionlint·Git 공백 검사를 통과했고 실제 비밀번호 파일의 Git 제외를 다시 확인했다. 앱 코드는 바뀌지 않아 기존에 통과한 전체 테스트·빌드는 반복하지 않고 태그 게시와 조회만 검증했다. 변경은 `[skip ci]`로 기록한다. 사용자 HTML 포맷 변경은 계속 보존한다.
+
+업데이트 위치: `.github/workflows/dev-registry.yaml`, `README.md`, `docs/DEV_REGISTRY.md`, `docs/evidence/dev-registry/latest-tag-verification.json`. 학생도 자기 namespace에서 `:latest`를 사용한다.

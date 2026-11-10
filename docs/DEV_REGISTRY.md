@@ -30,7 +30,7 @@ flowchart LR
     Registry -. 다음 CD 단계에서 pull .-> App[앱 컨테이너 실행]
 ```
 
-이미지 이름은 팀을, 태그는 버전을 구분합니다. `dev` 태그로 최신 개발 이미지를 찾고, `dev-커밋전체번호` 또는 digest로 CD에서 실행할 버전을 정확히 지정합니다. 같은 내용의 레이어는 Registry 안에서 중복 저장을 줄일 수 있습니다.
+이미지 이름은 팀을, 태그는 버전을 구분합니다. dev 브랜치에서 검사·업로드를 성공할 때마다 `latest`를 갱신합니다. 브랜치와 앱 프로필이 dev여도 최신 이미지 태그는 `latest`입니다. `dev-커밋전체번호` 또는 digest로 CD에서 실행할 버전을 정확히 지정할 수도 있습니다. 같은 내용의 레이어는 Registry 안에서 중복 저장을 줄일 수 있습니다.
 
 ## 팀별 주소
 
@@ -38,19 +38,19 @@ flowchart LR
 
 | 팀 | 이미지 이름 | 태그 |
 | --- | --- | --- |
-| 강의 예시 · 번호 없음 | `REGISTRY_HOST/team/idea-support-server` | `dev`, `dev-커밋전체번호` |
-| 1팀 | `REGISTRY_HOST/team1/idea-support-server` | `dev`, `dev-커밋전체번호` |
-| 2팀 | `REGISTRY_HOST/team2/idea-support-server` | `dev`, `dev-커밋전체번호` |
-| 3팀 | `REGISTRY_HOST/team3/idea-support-server` | `dev`, `dev-커밋전체번호` |
-| 4팀 | `REGISTRY_HOST/team4/idea-support-server` | `dev`, `dev-커밋전체번호` |
-| 5팀 | `REGISTRY_HOST/team5/idea-support-server` | `dev`, `dev-커밋전체번호` |
-| 6팀 | `REGISTRY_HOST/team6/idea-support-server` | `dev`, `dev-커밋전체번호` |
-| 7팀 | `REGISTRY_HOST/team7/idea-support-server` | `dev`, `dev-커밋전체번호` |
-| 8팀 | `REGISTRY_HOST/team8/idea-support-server` | `dev`, `dev-커밋전체번호` |
+| 강의 예시 · 번호 없음 | `REGISTRY_HOST/team/idea-support-server` | `latest`, `dev-커밋전체번호` |
+| 1팀 | `REGISTRY_HOST/team1/idea-support-server` | `latest`, `dev-커밋전체번호` |
+| 2팀 | `REGISTRY_HOST/team2/idea-support-server` | `latest`, `dev-커밋전체번호` |
+| 3팀 | `REGISTRY_HOST/team3/idea-support-server` | `latest`, `dev-커밋전체번호` |
+| 4팀 | `REGISTRY_HOST/team4/idea-support-server` | `latest`, `dev-커밋전체번호` |
+| 5팀 | `REGISTRY_HOST/team5/idea-support-server` | `latest`, `dev-커밋전체번호` |
+| 6팀 | `REGISTRY_HOST/team6/idea-support-server` | `latest`, `dev-커밋전체번호` |
+| 7팀 | `REGISTRY_HOST/team7/idea-support-server` | `latest`, `dev-커밋전체번호` |
+| 8팀 | `REGISTRY_HOST/team8/idea-support-server` | `latest`, `dev-커밋전체번호` |
 
 첫 이미지가 올라갈 때 경로가 생기므로 빈 레포 8개를 미리 만들 필요는 없습니다. 조회 화면에는 강의 예시와 아직 이미지가 없는 1팀~8팀을 모두 표시합니다. 번호가 없는 `team`은 이 저장소의 기본 예시이며, 학생은 자기 팀 번호를 사용합니다.
 
-현재 강의 예시 `docker.minq.live/team/idea-support-server:dev`는 실제 dev CI로 업로드한 상태입니다. [검사·업로드 실행](https://github.com/MinQDU014/idea-support-server/actions/runs/42821885235)과 [외부 HTTPS 검증 결과](evidence/dev-registry/classroom-upload-verification.json)를 확인할 수 있습니다. 학생 경로는 각 팀이 처음 올릴 때 생성됩니다.
+현재 강의 예시는 `docker.minq.live/team/idea-support-server:latest`입니다. [기존 앱의 검사·업로드 실행](https://github.com/MinQDU014/idea-support-server/actions/runs/42821885235), [앱 검증 결과](evidence/dev-registry/classroom-upload-verification.json), [latest 태그 검증 결과](evidence/dev-registry/latest-tag-verification.json)를 확인할 수 있습니다. 학생 경로는 각 팀이 처음 올릴 때 생성됩니다.
 
 팀별 로그인 계정은 구분하지만 **팀 경로는 접근 권한을 나누는 기능이 아닙니다.** 로그인한 계정은 다른 팀 이미지도 읽고 올릴 수 있습니다. 이번 실습은 서로 신뢰하는 학급의 공유 저장소를 기준으로 합니다. Registry 한 개의 기본 로그인 인증만으로 ECR IAM과 같은 팀별 권한이 생기지는 않습니다.
 
@@ -87,10 +87,10 @@ Environment의 사용 가능 브랜치도 `dev`로 제한합니다. 비밀번호
 기존 Gradle은 `CONTAINER_IMAGE`, `REGISTRY_USER`, `REGISTRY_PASSWORD`를 읽으므로 AWS 로그인 대신 Registry 계정을 전달하면 됩니다. 전체 workflow에서 `CONTAINER_IMAGE`는 `도메인/우리팀/idea-support-server:dev-커밋전체번호`로 지정합니다. 강의 예시는 `우리팀`에 `team`, 학생은 `team1`~`team8`을 사용합니다.
 
 ```bash
-./gradlew jib -PprojectDataImageTargetEnv=dev -Djib.to.tags=dev
+./gradlew jib -PprojectDataImageTargetEnv=dev -Djib.to.tags=latest
 ```
 
-위 명령은 이미지에 `dev` 태그도 함께 붙입니다. `-PprojectDataImageTargetEnv=dev`는 앱의 dev 프로필을 선택합니다. 전체 workflow의 검사 작업과 함께 사용합니다.
+위 명령은 이미지에 `latest` 태그도 함께 붙입니다. `-PprojectDataImageTargetEnv=dev`는 앱의 dev 프로필을 선택하며 이미지 태그와 별개입니다. 전체 workflow의 검사 작업과 함께 사용합니다.
 
 ## 조회 화면과 CD 연결
 
@@ -99,10 +99,10 @@ Environment의 사용 가능 브랜치도 `dev`로 제한합니다. 비밀번호
 이미지가 저장됐다고 앱이 실행되지는 않습니다. CD에서 아래처럼 같은 이미지 주소를 가져와 컨테이너로 실행합니다.
 
 ```bash
-docker pull docker.minq.live/team1/idea-support-server:dev-COMMIT_SHA
+docker pull docker.minq.live/team1/idea-support-server:latest
 ```
 
-앱 실행에는 별도의 DB·환경변수·포트 설정과 컨테이너 교체가 필요합니다. 이번 Registry 설치는 앱 8개를 자동 실행하는 작업이 아닙니다.
+위 명령은 가장 최근 업로드 성공 이미지를 가져옵니다. 특정 버전을 고정하려면 `latest` 대신 `dev-커밋전체번호` 또는 digest를 사용합니다. 앱 실행에는 별도의 DB·환경변수·포트 설정과 컨테이너 교체가 필요합니다. 이번 Registry 설치는 앱 8개를 자동 실행하는 작업이 아닙니다.
 
 ## 서버와 비용
 
