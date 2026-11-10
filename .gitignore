@@ -53,3 +53,9 @@ deploy/dev-registry/__pycache__/
 
 # Classroom registry passwords are kept locally, never committed.
 team-access.json
+cd-access.json
+
+# Local deployment credentials and Python caches.
+**/__pycache__/
+**/.env.*
+!**/.env.example

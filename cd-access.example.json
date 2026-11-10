@@ -1,0 +1,8 @@
+{
+  "team1": {
+    "deploy_url": "https://daelim.minq.live/_cd/team1",
+    "deploy_token": "REPLACE_WITH_YOUR_TEAM_TOKEN_FROM_INSTRUCTOR",
+    "health_url": "https://daelim.minq.live/team1/common/health",
+    "dev_database": "idea_team1_dev"
+  }
+}

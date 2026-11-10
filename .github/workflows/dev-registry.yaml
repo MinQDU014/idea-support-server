@@ -80,4 +80,24 @@ jobs:
       - name: Show image location
         shell: bash
         run: |
-          printf '### Dev image\n\nLatest: `%s/%s/idea-support-server:latest`\n\nCommit: `%s`\n\nThis workflow stores the image; it does not start the application.\n' "$REGISTRY_HOST" "$REGISTRY_NAMESPACE" "$CONTAINER_IMAGE" >> "$GITHUB_STEP_SUMMARY"
+          printf '### Dev image\n\nLatest: `%s/%s/idea-support-server:latest`\n\nCommit: `%s`\n' "$REGISTRY_HOST" "$REGISTRY_NAMESPACE" "$CONTAINER_IMAGE" >> "$GITHUB_STEP_SUMMARY"
+      - name: Deploy team app and check health
+        env:
+          DEPLOY_URL: ${{ vars.DEV_DEPLOY_URL }}
+          DEPLOY_TOKEN: ${{ secrets.DEV_DEPLOY_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$DEPLOY_URL" == "https://daelim.minq.live/_cd/$REGISTRY_NAMESPACE" ]]
+          test -n "$DEPLOY_TOKEN"
+          jq -n --arg image "$CONTAINER_IMAGE" --arg revision "$GITHUB_SHA" '{image:$image,revision:$revision}' > request.json
+          curl --silent --show-error --fail-with-body --max-time 1800 \
+            --header "Authorization: Bearer $DEPLOY_TOKEN" \
+            --header 'Content-Type: application/json' \
+            --data-binary @request.json "$DEPLOY_URL" > deployment-result.json
+          jq -e '.status == "deployed" or .status == "unchanged"' deployment-result.json
+          prefix="$REGISTRY_NAMESPACE"
+          if [[ "$prefix" == team ]]; then prefix=example; fi
+          curl --silent --show-error --fail "https://daelim.minq.live/$prefix/common/health" | jq -e '.status == "ok" and .database == "up"'
+          printf '\n### Lightsail deployment\n\nHealth: https://daelim.minq.live/%s/common/health\n\n' "$prefix" >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"Result: " + .status + "\n\nDigest: `" + .image + "`"' deployment-result.json >> "$GITHUB_STEP_SUMMARY"

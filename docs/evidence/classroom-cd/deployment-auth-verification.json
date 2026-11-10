@@ -1,0 +1,14 @@
+{
+  "unauthenticated_status": 401,
+  "other_team_token_status": 401,
+  "other_team_image_status": 400,
+  "authorized_deploy_http_status": 200,
+  "authorized_deploy": {
+    "team": "team",
+    "image": "docker.minq.live/team/idea-support-server@sha256:a56a12ab1f4af0035f3bbe8646a2b9d6f5e0284a4526068a49199e8974bb0562",
+    "previous": "docker.minq.live/team/idea-support-server@sha256:a56a12ab1f4af0035f3bbe8646a2b9d6f5e0284a4526068a49199e8974bb0562",
+    "revision": "ff4a3808955f1ab9a35e5880580a2ce52054bb24",
+    "time": 1794321380,
+    "status": "unchanged"
+  }
+}

@@ -1,0 +1,257 @@
+{
+  "teams": [
+    {
+      "team": "team",
+      "health_url": "https://daelim.minq.live/example/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/example"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    },
+    {
+      "team": "team1",
+      "health_url": "https://daelim.minq.live/team1/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/team1"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    },
+    {
+      "team": "team2",
+      "health_url": "https://daelim.minq.live/team2/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/team2"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    },
+    {
+      "team": "team3",
+      "health_url": "https://daelim.minq.live/team3/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/team3"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    },
+    {
+      "team": "team4",
+      "health_url": "https://daelim.minq.live/team4/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/team4"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    },
+    {
+      "team": "team5",
+      "health_url": "https://daelim.minq.live/team5/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/team5"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    },
+    {
+      "team": "team6",
+      "health_url": "https://daelim.minq.live/team6/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/team6"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    },
+    {
+      "team": "team7",
+      "health_url": "https://daelim.minq.live/team7/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/team7"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    },
+    {
+      "team": "team8",
+      "health_url": "https://daelim.minq.live/team8/common/health",
+      "health": {
+        "status": "ok",
+        "database": "up",
+        "aiMode": "mock",
+        "seedReady": true
+      },
+      "swagger_status": 200,
+      "swagger_server_urls": [
+        "https://daelim.minq.live/team8"
+      ],
+      "database_isolation": [
+        {
+          "environment": "dev",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        },
+        {
+          "environment": "main",
+          "own_database": true,
+          "other_team_denied": true,
+          "other_environment_denied": true
+        }
+      ]
+    }
+  ],
+  "database_count": 18
+}

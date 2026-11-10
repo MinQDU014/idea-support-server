@@ -81,3 +81,27 @@
 - actionlint·Git 공백 검사를 통과했고 실제 비밀번호 파일의 Git 제외를 다시 확인했다. 앱 코드는 바뀌지 않아 기존에 통과한 전체 테스트·빌드는 반복하지 않고 태그 게시와 조회만 검증했다. 변경은 `[skip ci]`로 기록한다. 사용자 HTML 포맷 변경은 계속 보존한다.
 
 업데이트 위치: `.github/workflows/dev-registry.yaml`, `README.md`, `docs/DEV_REGISTRY.md`, `docs/evidence/dev-registry/latest-tag-verification.json`. 학생도 자기 namespace에서 `:latest`를 사용한다.
+
+## 2026-11-10 11주차 CD 구성 비교 검토
+
+- 사용자 요청으로 dev의 자체 서버 배포와 main의 EKS 배포를 연결하는 학습 구성을 검토했다. 최신 커밋 ecb68f4에서 변경된 문서를 읽고 기존 main workflow가 ECR 업로드까지임을 확인했다.
+- Notion connector는 404였으나 로그인된 브라우저에서 11주차의 6장·7장 배포·되돌리기 내용을 확인했다. 페이지는 수정하지 않았다.
+- 공식 Docker·AWS·Kubernetes 자료로 EC2/Lightsail과 Compose/Swarm의 구분, 단일 서버 운영, EKS 팀별 공유 방식과 현재 가격을 확인했다.
+- [CD 학습 구성 검토](CD_LEARNING_PLAN.md)에 제안·근거·8팀 구분·수업 순서·Notion 갱신 대상을 기록했다. 권장안은 dev 공유 실행 서버 + Compose, main 공유 EKS, Swarm 선택 비교다. 사용자 확정 전 제안이다.
+- 인프라·권한·CI·배포 코드는 변경하지 않았다. 서버 생성·설치·EKS 배포·실기기 검증은 수행하지 않았다. 기존 HTML 미커밋 변경과 실제 계정 파일의 Git 제외를 유지했다.
+
+## 2026-11-10 이번 주 CD — Lightsail VM + Compose 구축
+
+- 사용자 확정: 이번 주 dev만 마무리하고 EKS 생성은 다음 주로 미룬다. EKS 클러스터·OIDC 배포 역할·VPC peering은 생성하지 않았다. main workflow는 기존 ECR 업로드 구성 그대로다.
+- 강의 계정 950177940921의 Lightsail classroom-dev-compose(2 CPU·8GB·160GB, USD44/월)를 만들고 고정 IP 13.55.177.148을 연결했다. 사용자가 GoDaddy A 레코드를 등록한 daelim.minq.live에서 Caddy HTTPS가 정상이다.
+- 관리자 키 등록 시 사용자 승인을 받아 Lightsail browser SSH를 잠시 허용했고, 로컬 SSH를 확인한 뒤 browser SSH 경로를 다시 닫았다. 현재 22번은 관리자 IP 59.14.52.80/32만 허용한다. 학생 SSH는 생성하지 않았다.
+- 초기 launch script의 /bin/sh·pipefail 오류는 생성 도구에서 수정했다. 실제 VM은 관리 SSH bootstrap으로 Docker를 설치했고 기존 cloud-init 오류 이력은 보존한다.
+- 공유 MySQL 한 개, 예시+8팀 Compose 앱 9개, HTTPS 팀별 경로를 실제 설치했다. 각 팀 dev/main DB·사용자를 분리해 총 18개를 만들었다. main DB는 다음 주용이며 EKS 앱은 없다.
+- 모든 팀의 HTTPS health·Swagger가 200이고 DB 연결 및 mock 초기 데이터 준비가 정상이다. 18개 DB 사용자 모두 자기 DB에 접근 가능하고 다른 팀 및 반대 환경 DB는 Access denied임을 검증했다. 증거는 docs/evidence/classroom-cd/lightsail-verification.json.
+- 팀별 CD 토큰과 고정 Compose 프로젝트·이미지 경로를 사용하는 HTTPS 배포 수신기를 설치했다. 잘못된 인증과 다른 팀 토큰은 401, 다른 팀 이미지는 400으로 거절하고 자기 예시 이미지의 요청은 200임을 실제 확인했다. 단위 검증 2개는 임의 이미지/명령 문자열 거절과 실패 시 해당 팀만 복구하는 동작을 통과했다. 실제 실패 이미지의 운영 복구/부하 시험을 했다고 표현하지 않는다.
+- dev Actions에 이미지 업로드 다음 앱 교체·상태 확인을 연결했다. GitHub dev Environment에 예시 URL·배포 토큰을 설정했다. 학생은 자기 팀 Registry 비밀값과 CD 토큰만 설정하며 서버 키나 DB 비밀값을 받지 않는다. 실제 CI 결과는 후속 기록에 남긴다.
+- 앱 JVM heap 256MiB, 컨테이너 제한 768MiB, DB pool 3으로 설정했다. 직렬 배포로 동시 JVM 기동을 제한한다. 유휴 9개 앱 메모리 측정 약 0.6GiB/앱은 부하 성능 보장이 아니다.
+- MySQL은 사설 IP에만 노출하며 공인 3306은 닫았다. Docker DB 방화벽 서비스와 일일 서버 내부 압축 백업(7일 보관)을 설치하고 첫 백업을 만들었다. 외부 백업·재해 복구 검증은 별도다.
+- 실제 cd-access.json도 백엔드와 로컬 .local에 저장하고 Git에서 제외했다. 공개 예제에는 가짜 토큰만 있다. 기존 HTML 포맷 미커밋 변경을 보존했다.
+
+업데이트 위치: .github/workflows/dev-registry.yaml, GitHub dev Environment, deploy/classroom-cd/, 서버 /opt/classroom-cd/, 11주차 Notion. EKS 초안은 다음 주 참고용이고 적용·검증 완료 자료가 아니다.

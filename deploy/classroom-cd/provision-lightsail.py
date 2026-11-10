@@ -1,6 +1,5 @@
 """Run with AWS CLI in the classroom account. Never handles private keys."""
 import argparse
-import base64
 import json
 import subprocess
 import shlex
@@ -26,6 +25,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--ssh-public-key', required=True)
     parser.add_argument('--management-cidr', required=True)
+    parser.add_argument('--console-access', action='store_true', help='Temporarily allow AWS Lightsail browser SSH only when authorized')
     args = parser.parse_args()
     if not args.ssh_public_key.startswith('ssh-rsa ') or not args.management_cidr.endswith('/32'):
         raise ValueError('An administrator public key and single-IP /32 are required')
@@ -42,8 +42,9 @@ def main():
     blueprints = aws('lightsail', 'get-blueprints')['blueprints']
     blueprint = next(b for b in blueprints if b['isActive'] and b['blueprintId'] == 'ubuntu_24_04')
     instances = aws('lightsail', 'get-instances')['instances']
-    user_data = '''#!/bin/bash
-set -euo pipefail
+    # Lightsail wraps launch scripts with /bin/sh; use POSIX shell syntax here.
+    user_data = '''#!/bin/sh
+set -eu
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y ca-certificates curl python3
@@ -86,7 +87,7 @@ touch /opt/classroom-cd/docker-ready
     # Lightsail rejects firewall changes while an instance is pending.
     # Only the administrator gets SSH. Never expose MySQL or Docker API publicly.
     aws('lightsail', 'put-instance-public-ports', instanceName=NAME, portInfos=[
-        {'fromPort': 22, 'toPort': 22, 'protocol': 'tcp', 'cidrs': [args.management_cidr], 'cidrListAliases': ['lightsail-connect']},
+        {'fromPort': 22, 'toPort': 22, 'protocol': 'tcp', 'cidrs': [args.management_cidr], 'cidrListAliases': ['lightsail-connect'] if args.console_access else []},
         {'fromPort': 80, 'toPort': 80, 'protocol': 'tcp', 'cidrs': ['0.0.0.0/0']},
         {'fromPort': 443, 'toPort': 443, 'protocol': 'tcp', 'cidrs': ['0.0.0.0/0']},
     ])
