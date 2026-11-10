@@ -69,12 +69,6 @@ touch /opt/classroom-cd/docker-ready
             blueprintId=blueprint['blueprintId'], bundleId=bundle['bundleId'],
             userData=user_data, ipAddressType='ipv4',
             tags=[{'key': 'Environment', 'value': 'dev'}, {'key': 'Purpose', 'value': 'week11-team1-team8'}])
-    # Only the administrator gets SSH. Never expose MySQL or the Docker API publicly.
-    aws('lightsail', 'put-instance-public-ports', instanceName=NAME, portInfos=[
-        {'fromPort': 22, 'toPort': 22, 'protocol': 'tcp', 'cidrs': [args.management_cidr]},
-        {'fromPort': 80, 'toPort': 80, 'protocol': 'tcp', 'cidrs': ['0.0.0.0/0']},
-        {'fromPort': 443, 'toPort': 443, 'protocol': 'tcp', 'cidrs': ['0.0.0.0/0']},
-    ])
     static_name = NAME + '-ip'
     statics = aws('lightsail', 'get-static-ips')['staticIps']
     static = next((s for s in statics if s['name'] == static_name), None)
@@ -89,6 +83,13 @@ touch /opt/classroom-cd/docker-ready
         time.sleep(10)
     else:
         raise RuntimeError('Lightsail VM did not become running in time')
+    # Lightsail rejects firewall changes while an instance is pending.
+    # Only the administrator gets SSH. Never expose MySQL or Docker API publicly.
+    aws('lightsail', 'put-instance-public-ports', instanceName=NAME, portInfos=[
+        {'fromPort': 22, 'toPort': 22, 'protocol': 'tcp', 'cidrs': [args.management_cidr]},
+        {'fromPort': 80, 'toPort': 80, 'protocol': 'tcp', 'cidrs': ['0.0.0.0/0']},
+        {'fromPort': 443, 'toPort': 443, 'protocol': 'tcp', 'cidrs': ['0.0.0.0/0']},
+    ])
     static = aws('lightsail', 'get-static-ip', staticIpName=static_name)['staticIp']
     if static.get('attachedTo') not in (None, NAME):
         raise RuntimeError('Static IP belongs to another instance')
