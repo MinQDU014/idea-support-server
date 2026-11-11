@@ -21,7 +21,7 @@ class SwaggerConfig {
 	@Bean
 	fun customOpenAPI(): OpenAPI {
 		return OpenAPI()
-			.info(Info().title("Idea Support API").version("v1.1"))
+			.info(Info().title("Idea Support API").version("v1.0"))
 			.servers(
 				listOf(
 					Server().url(swaggerURL)
