@@ -45,11 +45,11 @@ Lightsail **VM은 서버리스가 아니다**. 묶음 요금의 가상 서버이
 
 ## GitHub 웹에서 PR을 되돌려 자동 재배포하기
 
-학생은 [실제 SHA 예시·화면별 웹 실습 안내](../../docs/DEV_ROLLBACK_WEB.md)를 따른다. BAD_COMMIT_SHA는 되돌릴 변경의 커밋 번호를 넣는 자리표시자다. 실제 설명용 SHA `fd0e2b707be3c7d768b4ca04dbf7e0129b575f80`와 GitHub 원문 링크·복사 아이콘 화면을 안내에 넣었다. 이 문서 커밋 자체를 실습 복구 대상으로 사용하지 않는다.
+학생은 [실제 SHA 예시·화면별 웹 실습 안내](../../docs/DEV_ROLLBACK_WEB.md)를 따른다. BAD_COMMIT_SHA는 되돌릴 변경의 커밋 번호를 넣는 자리표시자다. 실제 버전 변경 SHA `86cac508fd4a49bb5158f0453fd14bb4310cefd3`와 GitHub 원문 링크·복사 아이콘 화면을 안내에 넣었다. 학생은 자기 팀 실습 PR을 대상으로 한다.
 
 이번 주 주 경로는 **Pull requests → Closed → dev에 합쳐진 실습 PR → Revert → 복구 PR의 base: dev·Files changed 확인 → Create pull request → Checks 통과 → Merge pull request → Confirm merge → Actions → 자기 팀 health**다. 터미널·Python·SSH가 필요하지 않다.
 
-예시 저장소에는 2026-11-11 조회 기준 merged PR이 없다. 학생 저장소에서 dev 기준 실습 브랜치를 만들고 README 문장 한 줄을 추가한 PR을 dev에 합치는 준비부터 진행한다. 실습 커밋에는 skip ci 지시를 넣지 않는다. 웹 Revert는 합쳐진 PR을 대상으로 하며 일반 커밋 화면에 버튼이 있다고 안내하지 않는다.
+예시 저장소에는 dev에 합쳐진 [실습 PR #1](https://github.com/MinQDU014/idea-support-server/pull/1)이 있다. 강사는 예시 앱의 Swagger 표시 버전을 바꿔 시연했다. 학생 저장소에서 dev 기준 실습 브랜치를 만들고 README 문장 한 줄을 추가한 PR을 dev에 합치는 준비부터 진행한다. 실습 커밋에는 skip ci 지시를 넣지 않는다. 웹 Revert는 합쳐진 PR을 대상으로 하며 일반 커밋 화면에 버튼이 있다고 안내하지 않는다.
 
 Revert 버튼만으로는 dev가 바뀌지 않는다. 복구 PR이 dev에 merge돼야 현재 workflow의 검사·새 이미지 업로드·팀 앱 교체·health가 실행된다. 새 Revert 커밋 번호의 태그와 latest가 갱신되고 실제 배포 digest를 Actions 요약에서 확인한다. 코드 복구가 DB 스키마·데이터 복원을 뜻하지는 않는다.
 

@@ -10,20 +10,20 @@
 
 | 항목 | 실제 값 |
 | --- | --- |
-| 전체 SHA | `fd0e2b707be3c7d768b4ca04dbf7e0129b575f80` |
-| 화면의 짧은 표시 | `fd0e2b7` |
-| 변경 내용 | 복구 강의 문서를 Git Revert 방식으로 수정한 커밋 |
-| 직접 확인 | [실제 GitHub 커밋 화면](https://github.com/MinQDU014/idea-support-server/commit/fd0e2b707be3c7d768b4ca04dbf7e0129b575f80) |
+| 전체 SHA | `86cac508fd4a49bb5158f0453fd14bb4310cefd3` |
+| 화면의 짧은 표시 | `86cac50` |
+| 변경 내용 | Swagger API 표시 버전을 `v1.0`에서 `v1.1`로 바꾼 실습 커밋 |
+| 직접 확인 | [실제 GitHub 커밋 화면](https://github.com/MinQDU014/idea-support-server/commit/86cac508fd4a49bb5158f0453fd14bb4310cefd3), [실습 PR #1](https://github.com/MinQDU014/idea-support-server/pull/1) |
 
-이 문서 커밋을 취소한다고 가정하면 `BAD_COMMIT_SHA` 자리에 위 **40자리 전체 번호**를 넣는다는 뜻이다. 이 번호는 SHA를 읽는 **설명용 예시**이며 학생이 실제로 되돌릴 대상은 자기 팀의 실습 PR이다. 예시 문서 커밋에는 `[skip ci]`가 있어 재배포 실습 대상으로 쓰지 않는다.
+이 변경 커밋을 취소한다면 `BAD_COMMIT_SHA` 자리에 위 **40자리 전체 번호**를 넣는다는 뜻이다. 이 커밋은 의도적으로 표시 버전을 바꾼 강사 실습이며 앱 장애 커밋은 아니다. 학생은 자기 팀 실습 PR을 대상으로 한다. **웹 Revert에서는 이 번호를 입력하지 않고 원래 PR을 선택한다.**
 
-![실제 커밋 화면: Commit fd0e2b7과 Copy full SHA 아이콘](images/dev-rollback/github-commit-sha.png)
+![실제 커밋 화면: Commit 86cac50과 Copy full SHA 아이콘](images/dev-rollback/github-demo-commit-sha.png)
 
 SHA 확인 순서: **Code → 브랜치 dev → Commits → 커밋 제목 → Copy full SHA 아이콘**. 커밋 주소의 마지막 부분도 전체 SHA다. 위 화면은 실제 예시 저장소의 화면이다.
 
 ## 준비: dev에 합쳐진 실습 PR 한 개
 
-2026-11-11 확인 시 예시 저장소에는 merged PR이 없다. 현재 커밋은 직접 push한 기록이므로 바로 누를 PR Revert 버튼은 없다. 학생 저장소에서 다음 준비를 먼저 한다. 이미 dev에 합쳐진 실습 PR이 있으면 바로 다음 절로 넘어간다.
+예시 저장소에는 [dev에 합쳐진 실습 PR #1](https://github.com/MinQDU014/idea-support-server/pull/1)이 있다. 강사는 Swagger 표시 버전 변경으로 시연했다. 학생 저장소에서는 다음 준비를 먼저 한다. 이미 dev에 합쳐진 실습 PR이 있으면 바로 다음 절로 넘어간다.
 
 1. **Code** 탭에서 브랜치를 **dev**로 고른다.
 2. `README.md`를 열고 연필 **Edit this file**을 누른다. 실습 문장 한 줄을 추가한다.
@@ -66,4 +66,4 @@ Revert 버튼이 없으면 저장소 쓰기 권한, 원래 PR의 Merged 상태, 
 
 공식 근거: [웹에서 파일 수정·새 브랜치 만들기](https://docs.github.com/en/repositories/working-with-files/managing-files/editing-files), [PR 되돌리기](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/reverting-a-pull-request), [PR 합치기](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/merging-a-pull-request), [skip ci의 동작](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/skip-workflow-runs).
 
-업데이트 위치: 11주차 Notion의 활동 STEP 2 → 5·6번과 이 안내. 이 자료에서는 실제 PR 생성·Merge·Revert 또는 운영 서버 배포를 대신 실행하지 않았다.
+업데이트 위치: 11주차 Notion의 활동 STEP 2 → 5·6번과 이 안내. 강사의 실제 PR·배포·웹 Revert 검증 기록은 [실제 시연 기록](CD_PR_REVERT_DEMO.md)에 남긴다.
