@@ -159,3 +159,16 @@
 - 이전 검토 문서·운영 README·SSH 안내·다음 주 EKS 초안의 현재 상태를 사용자 최신 결정으로 갱신했다. AWS 결제·계정·리소스·DNS 설정은 변경하지 않는다. 문서 변경만 [skip ci]로 기록하고 기존 HTML 미커밋 변경은 보존한다.
 
 업데이트 위치: 현재 운영 안내는 deploy/classroom-cd/README.md, 이전 취소 기록은 docs/LIGHTSAIL_SEOUL_MIGRATION.md. 현재 사용량·크레딧·무료 플랜 종료일은 AWS 청구 화면에서 확인한다.
+
+## 2026-11-11 복구 실습을 Git Revert 후 재배포로 변경
+
+- 사용자가 11주차 활동의 ‘6. 이전 버전으로 되돌리기’를 Python 배포 요청·서버 Compose 교체 대신 GitHub 커밋을 되돌려 재배포하는 방식으로 바꾸도록 요청했다. 이어 다음 주 예고는 이번 수정에서 제외하라고 정정했다. 기존 EKS/Argo CD 예고를 새로 추가하거나 다른 강의 부분을 재작성하지 않았다.
+- 연결된 Notion fetch는 같은 페이지에 object_not_found 404여서 로그인된 기존 Chrome 탭에서 현재 본문을 읽었다. 사용자가 페이지를 재구성해 해당 절이 활동 STEP 2의 6번에 있음을 확인하고 그 다섯 블록만 수정했다. 다른 표·본문·예고 영역은 보존했다.
+- 제목을 ‘6. 커밋을 되돌려 자동 재배포하기’로 바꾸고, GitHub dev Commits에서 문제 변경의 커밋을 찾은 뒤 일반 커밋에 git revert --no-edit BAD_COMMIT_SHA를 실행하고 dev에 push하도록 설명했다. 원래 커밋을 지우는 대신 새 복구 커밋을 남기고, 그 커밋을 기존 CD가 새로 빌드·배포한다는 점을 명시했다.
+- git switch dev, git pull --ff-only origin dev, git log --oneline -5, git revert, git push 순서와 실제 health 주소를 넣었다. 합쳐진 PR은 GitHub PR의 Revert로 복구 PR을 만들고 대상 dev에 merge하는 경로도 설명했다. 일반 커밋에 웹 Revert 버튼이 있다고 안내하지 않는다.
+- Python 3·로컬 cd-access.json·request-deploy.py와 해당 절의 서버 수동 복구 명령은 제거했다. CI가 쓰는 배포 API·토큰과 보조 도구 자체는 유지하며 이번 작업에서 실제 커밋 되돌리기나 서버 배포는 실행하지 않았다.
+- Actions의 검사·테스트 → 이미지 업로드 → 팀 앱 교체 → health와 실제 기능 확인, 새 Revert 커밋 태그·latest 갱신을 설명했다. 운영 README와 CD 학습 계획도 같은 방식으로 갱신했다. 코드 복구가 DB 스키마/데이터 복원을 뜻하지 않음은 운영 안내에 유지했다.
+- Git/GitHub 공식 문서와 현재 dev workflow의 push/PR 조건을 확인했다. Notion 새로고침 뒤 git revert·push와 PR 안내가 저장됐고, 해당 절에 기존 Python/수동 Compose 복구 명령이 없음을 검증했다. 제목 번호·굵기 서식도 확인했다. 화면 증거는 로컬 .local/evidence/week11-git-revert.png다.
+- Markdown 공백 검사를 통과했다. 앱·workflow는 변경하지 않아 앱 테스트·이미지 빌드·실기기 검사를 반복하지 않는다. 안내·기록만 [skip ci]로 커밋하며 기존 deploy/dev-registry/index.html의 미커밋 포맷 변경은 보존한다.
+
+업데이트 위치: 지정 11주차 Notion의 활동 STEP 2 → 6번, deploy/classroom-cd/README.md의 학생 복구 실습, docs/CD_LEARNING_PLAN.md. 이번 수정은 다음 주 예고를 포함하지 않는다.

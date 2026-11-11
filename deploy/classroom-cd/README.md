@@ -43,21 +43,29 @@ Lightsail **VM은 서버리스가 아니다**. 묶음 요금의 가상 서버이
 - `classroom-deploy.service`: loopback 전용 수신기. TLS·팀별 인증, 이미지 경로 검증, 고정 명령 인자, 요청 크기 제한, 전역 배포 직렬화, 상태 확인·이전 이미지 복구를 수행한다. 결과는 팀별 `deployment-result.json`에 남긴다.
 - `classroom-db-firewall.service`: Docker 재기동 후 DB 방화벽 적용. `classroom-db-backup.timer`: 매일 18:00 UTC(한국 03:00), 서버 내 압축 SQL 백업 7일 보관. **같은 VM의 백업이므로 서버 유실 대비 외부 백업·복구 검증은 별도 과제다.**
 
-강사 수동 교체·복구는 해당 팀 compose.json의 image만 지정 버전으로 바꾼 후 다음 명령을 실행한다. 공유 MySQL이나 데이터 볼륨을 삭제하지 않는다.
+## 커밋을 되돌려 자동 재배포하기 — 이번 주 학생 실습
+
+GitHub에서 `dev` 브랜치의 Commits를 열어 되돌릴 변경의 커밋 번호를 찾는다. `BAD_COMMIT_SHA`에는 그 변경을 만든 커밋 번호를 넣는다. 작업 중인 파일은 먼저 커밋한 뒤 백엔드 저장소 루트에서 실행한다. 아래는 merge 커밋이 아닌 일반 커밋 한 개를 되돌리는 예시다.
 
 ```sh
-sudo docker compose -p team1 -f /opt/classroom-cd/team1/compose.json pull app
-sudo docker compose -p team1 -f /opt/classroom-cd/team1/compose.json up -d --no-deps app
+git switch dev
+git pull --ff-only origin dev
+git log --oneline -5
+git revert --no-edit BAD_COMMIT_SHA
+git push origin dev
+```
+
+`git revert`는 선택한 변경을 취소하는 새 커밋을 남긴다. dev push 후 기존 Actions가 검사·테스트 → 이미지 생성·업로드 → 자기 팀 앱 교체 → health 확인을 다시 실행한다. 복구 이미지에는 새 Revert 커밋 번호의 `dev-커밋번호` 태그가 붙고 `latest`도 갱신된다. Actions 요약의 digest와 실제 기능에서 문제 변경이 취소됐는지 확인한다.
+
+```sh
 curl --fail https://daelim.minq.live/team1/common/health
 ```
 
-학생은 강사에게 자기 팀 항목만 담긴 `cd-access.json`을 받아 Git에서 제외한 백엔드 루트에 둔다. Python 3에서 다음과 같이 기존 커밋 태그 또는 digest를 요청하면 SSH 없이 복구할 수 있다. `FULL_COMMIT_SHA`는 실제 기존 태그의 전체 커밋 번호로 바꾼다.
+GitHub 웹에서 합쳐진 PR을 되돌릴 때는 해당 PR의 **Revert**로 복구 PR을 만들고 대상 브랜치가 **dev**인지 확인한 뒤 merge한다. PR 검사 성공 뒤 dev 반영으로 배포가 실행된다. 일반 커밋에 웹 Revert 버튼이 있다고 가정하지 않는다. 충돌이 나면 임의의 여러 커밋을 되돌리지 말고 변경 내용을 확인한 뒤 해결한다.
 
-```sh
-python deploy/classroom-cd/request-deploy.py --team team1 --image docker.minq.live/team1/idea-support-server:dev-FULL_COMMIT_SHA
-```
+학생의 이번 주 복구 실습에는 Python 도구·로컬 `cd-access.json`·서버 SSH·Compose 수동 교체를 요구하지 않는다. 배포용 `DEV_DEPLOY_TOKEN` 등 기존 GitHub Environment 설정은 그대로 필요하다. 운영용 배포 API와 보조 도구는 유지하지만 이 절에서는 Git의 변경 이력과 자동 CD를 연결해서 학습한다. 코드 복구만으로 DB 스키마나 데이터가 되돌아가지는 않는다.
 
-앱 이미지 복구는 DB 스키마나 데이터를 되돌리지 않는다. 학생 실습에 `docker compose down -v`를 넣지 않는다.
+근거: [Git revert](https://git-scm.com/docs/git-revert), [GitHub에서 PR 되돌리기](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/reverting-a-pull-request).
 
 ## 설치 도구와 검증
 
