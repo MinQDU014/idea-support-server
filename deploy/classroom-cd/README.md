@@ -55,6 +55,8 @@ Revert 버튼만으로는 dev가 바뀌지 않는다. 복구 PR이 dev에 merge�
 
 안내의 SHA 화면은 실제 예시 저장소를 캡처했다. Revert·Merge 버튼 그림은 출처를 표시한 GitHub 공식 문서 예시이며 우리 저장소에서 실제 복구 PR을 실행한 화면으로 제시하지 않는다. 운영용 API·보조 도구와 GitHub Environment의 배포 토큰은 유지한다.
 
+이후 실제 [PR 배포·웹 Revert 시연](../../docs/CD_PR_REVERT_DEMO.md)도 완료했다. PR #1로 예시 앱의 API 표시 버전 `v1.1`을 배포하고, 원래 PR의 Revert 버튼으로 만든 PR #2를 dev에 합쳐 `v1.0`으로 재배포했다. 현재 배포 revision은 `61b811088e55146142596ac31788d3546025f5fc`이며 `latest`·커밋 태그·실행 digest 일치와 예시+8팀 health를 확인했다. 실제 화면은 시연 기록에서 공식 예시와 별도로 제공한다.
+
 ## 설치 도구와 검증
 
 최초 생성: `provision-lightsail.py --region 대상리전` → 관리자 SSH에서 `bootstrap-ubuntu.sh` → `install-compose.py` → `install-controller.py` → `install-maintenance.py`. 리전은 반드시 명시하며 `--plan-only`로 생성 전 점검할 수 있다. 비밀 파일을 인자로 전달하고 HTTPS 도메인으로 설치한다. 전체 재설정은 강사만 수행하며 팀별 배포에는 설치 도구를 재실행하지 않는다.

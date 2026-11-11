@@ -189,3 +189,15 @@
 - 공유 안내·이미지는 dev의 a372734에 먼저 반영했으며 이 항목으로 최종 검증을 기록한다. 실제 PR 생성·merge·revert, 앱 배포, workflow와 AWS 변경은 실행하지 않았다. 문서 변경만 Git 공백 검사 후 [skip ci]로 반영하고 기존 deploy/dev-registry/index.html의 미커밋 변경을 보존한다.
 
 업데이트 위치: 지정 11주차 Notion 활동 STEP 2 → 5·6번, docs/DEV_ROLLBACK_WEB.md, deploy/classroom-cd/README.md, docs/CD_LEARNING_PLAN.md. 학생은 자기 팀 저장소의 실습 PR을 사용한다.
+
+## 2026-11-11 실제 dev PR 배포·웹 Revert·두 버전 검증 완료
+
+- 사용자가 실제 dev PR을 올려 배포한 버전을 적고, 이어 Revert 후 다시 배포한 버전을 기록하도록 요청했다. 별도 worktree의 codex/cd-web-revert-demo-20261111에서 Swagger API 표시 버전 한 줄을 v1.0 → v1.1로 바꿨다. Gradle 프로젝트 버전은 0.0.1-SNAPSHOT을 유지했다. 실습 준비 MD도 함께 기록했고 기존 HTML 변경은 격리해 보존했다.
+- 원래 변경 SHA는 86cac508fd4a49bb5158f0453fd14bb4310cefd3이며 PR #1의 대상은 dev다. PR 검사 189개 통과 후 GitHub 웹 Merge pull request → Confirm merge로 합쳤다. merge SHA 2d11e007dfa0e821c65c009183d25f660390f236의 Actions 42932860652가 검사·Registry 업로드·실제 배포·health까지 성공했고 공개 Swagger·OpenAPI에서 v1.1을 확인했다.
+- 첫 배포 성공을 확인한 뒤 원래 PR #1의 실제 Revert 버튼을 눌렀다. base dev와 v1.1 → v1.0의 반대 변경을 확인하고 PR #2를 만들었다. 웹이 만든 Revert SHA는 d6738cf6b002c2649566373f983a454a548a96b7이다. PR 검사 189개 통과 후 웹에서 dev에 merge했고 새 merge SHA는 61b811088e55146142596ac31788d3546025f5fc다.
+- 복구 Actions 42934053632가 검사·빌드·업로드·배포·health에 성공했다. 두 PR과 두 dev push의 테스트는 각각 189개 성공했다. 실제 공개 Swagger·OpenAPI는 v1.0이고 CD 상태의 revision도 61b8110…다. 업데이트 실행 digest e7f006d5…에서 복구 실행 digest 231bd53f…로 바뀌었다. 전체 값은 docs/CD_PR_REVERT_DEMO.md와 검증 JSON에 기록했다.
+- 인증된 Registry HEAD로 latest와 dev-61b811088e55146142596ac31788d3546025f5fc가 서버 실행 digest sha256:231bd53f691ef1df684e62f83ac8784fcaef813578453dfd78706468fa3cfc51과 일치함을 확인했다. 예시+team1~team8 health 9개가 모두 정상이다. CI는 강사 예시 공간만 배포하며 다른 팀 앱과 DB는 변경하지 않았다. 실제 인증 정보는 출력하거나 Git에 올리지 않았다.
+- 실제 SHA·버전·원래/복구 PR·Actions·이미지 태그와 실제 화면을 공유 안내에 반영했다. Notion connector는 여전히 404여서 로그인된 기존 탭에서 같은 페이지 ID의 6번을 갱신했다. 현재 페이지 제목은 CD-1이며 게시 상태·제목을 변경하지 않았다. 편집 중 붙여넣기·캡션 선택 문제가 생겨 해당 절의 순서·결과를 일반 Notion 문단으로 복원했다. 새로고침 뒤 두 버전 기록·정상 캡션과 본문을 확인했다. 다른 표·강의 본문과 다음 주 예고는 수정하지 않았다.
+- 실제 배포 화면·PR diff·Revert 생성 화면은 docs/images/dev-rollback/에, 비밀값 없는 원본 검증은 docs/evidence/classroom-cd/pr-revert-demo.json에 저장했다. Notion 최종 화면은 로컬 .local/evidence/week11-real-pr-versions.png다. 원래 준비 문서는 PR Revert로 삭제됐으므로 실제 완료 기록을 문서 커밋에서 다시 만들었다. 문서 커밋은 skip ci로 기록해 앱을 다시 배포하지 않는다.
+
+업데이트 위치: dev의 docs/CD_PR_REVERT_DEMO.md와 docs/DEV_ROLLBACK_WEB.md, deploy/classroom-cd/README.md, 지정 11주차 Notion 활동 STEP 2 → 6번. 현재 실행 앱은 API 표시 버전 v1.0 / 배포 revision 61b8110…이며 후속 문서 커밋 SHA를 앱 배포 버전으로 혼동하지 않는다.

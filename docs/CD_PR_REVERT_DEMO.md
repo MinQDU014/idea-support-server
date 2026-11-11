@@ -7,7 +7,7 @@
 | 구분 | API 표시 버전 | PR | dev merge SHA | 자동 배포 |
 | --- | --- | --- | --- | --- |
 | 업데이트 | `v1.1` | [#1](https://github.com/MinQDU014/idea-support-server/pull/1) | `2d11e007dfa0e821c65c009183d25f660390f236` | [42932860652](https://github.com/MinQDU014/idea-support-server/actions/runs/42932860652), 성공·공개 서버 확인 |
-| 웹 Revert 후 복구 | `v1.0` | [#2](https://github.com/MinQDU014/idea-support-server/pull/2) | `61b811088e55146142596ac31788d3546025f5fc` | [42934053632](https://github.com/MinQDU014/idea-support-server/actions/runs/42934053632), 배포 확인 대기 |
+| 웹 Revert 후 복구 | `v1.0` | [#2](https://github.com/MinQDU014/idea-support-server/pull/2) | `61b811088e55146142596ac31788d3546025f5fc` | [42934053632](https://github.com/MinQDU014/idea-support-server/actions/runs/42934053632), 성공·공개 서버 확인 |
 
 **취소할 원래 변경 SHA:** [`86cac508fd4a49bb5158f0453fd14bb4310cefd3`](https://github.com/MinQDU014/idea-support-server/commit/86cac508fd4a49bb5158f0453fd14bb4310cefd3). 이 커밋이 Swagger의 `v1.0`을 `v1.1`로 바꿨다. `BAD_COMMIT_SHA`는 이런 변경 커밋 번호를 넣는 자리표시자다.
 
@@ -17,9 +17,9 @@
 
 - 업데이트: `docker.minq.live/team/idea-support-server:dev-2d11e007dfa0e821c65c009183d25f660390f236`
 - 복구 배포: `docker.minq.live/team/idea-support-server:dev-61b811088e55146142596ac31788d3546025f5fc`
-- 공통 최신 태그: `docker.minq.live/team/idea-support-server:latest`. 복구 배포가 성공하면 이 태그도 복구된 코드의 새 이미지로 갱신된다.
+- 공통 최신 태그: `docker.minq.live/team/idea-support-server:latest`. 실제 복구 배포 후 이 태그와 복구 커밋 태그가 서버의 실행 digest와 일치함을 Registry HEAD·CD 상태 GET으로 확인했다.
 - 업데이트 실행 digest: `sha256:e7f006d5919011ef170ec0318cb22c15fd60de53d02a67e6c6c67e770a20bfa2`.
-- 복구 실행 digest: 배포 완료 뒤 기록한다.
+- 복구 실행 digest: `sha256:231bd53f691ef1df684e62f83ac8784fcaef813578453dfd78706468fa3cfc51`.
 
 ## 실제로 누른 화면 순서
 
@@ -27,7 +27,7 @@
 2. 첫 자동 배포 성공 뒤 [Swagger](https://daelim.minq.live/example/swagger-ui/index.html)와 [OpenAPI](https://daelim.minq.live/example/v3/api-docs/common)에서 `v1.1`을 확인했다. 예시 앱과 8팀 앱의 health도 모두 정상이다.
 3. 원래 PR #1 아래쪽 merge 기록의 **Revert** 버튼을 눌렀다. 비교 화면의 **base: dev**와 반대 변경 `v1.1 → v1.0`을 확인하고 **Create pull request**로 PR #2를 만들었다.
 4. PR #2의 검사도 189개 테스트를 통과했다. **Merge pull request → Confirm merge**로 dev에 합쳤다.
-5. 두 번째 Actions 실행과 공개 서버 버전·배포 revision·digest를 확인 중이다. 앱 health만 보고 복구 완료로 판단하지 않는다.
+5. 두 번째 Actions 실행 성공 뒤 공개 Swagger·OpenAPI의 `v1.0`, CD 상태의 revision `61b8110…`, `latest`·커밋 태그·서버 실행 digest 일치를 확인했다. 예시+8팀 health 9개도 모두 `status: ok`, `database: up`이다. PR 두 번과 push 배포 두 번의 테스트는 각각 189개를 통과했다.
 
 ## 실제 화면
 
@@ -50,6 +50,12 @@ PR #1에서 `v1.0 → v1.1` 변경과 대상 dev를 확인했다.
 PR #2의 Files changed에는 `v1.1 → v1.0`의 반대 변경이 들어 있다.
 
 ![실제 복구 PR의 버전 변경](images/dev-rollback/pr2-reverted-version-diff.png)
+
+복구 PR을 dev에 합친 뒤 새 이미지가 배포됐고 공개 Swagger는 다시 `v1.0`이다.
+
+![실제 복구 배포된 v1.0](images/dev-rollback/swagger-reverted-v1.0.png)
+
+비밀값 없는 원본 검증 값: [배포 전·업데이트·복구 JSON](evidence/classroom-cd/pr-revert-demo.json). 최종 확인 시각은 2026-11-11 09:52:59 KST다. 이전 baseline digest와 복구 digest는 다르지만 API 표시 버전과 코드 변경은 복원됐다. 같은 옛 이미지 digest를 재사용한 복구로 설명하지 않는다.
 
 ## 확인 경계와 업데이트 위치
 

@@ -2,6 +2,8 @@
 
 학생은 GitHub 웹과 자기 팀 health 주소로 실습한다. 터미널·Python·SSH는 필요하지 않다.
 
+실제 시연은 [업데이트 PR #1](https://github.com/MinQDU014/idea-support-server/pull/1)의 `v1.1` 배포(merge `2d11e00`)와 [웹 Revert PR #2](https://github.com/MinQDU014/idea-support-server/pull/2)의 `v1.0` 복구 배포(merge `61b8110`)까지 완료했다. 전체 SHA·이미지 태그·digest·실제 화면은 [시연 기록](CD_PR_REVERT_DEMO.md)에 있다. 버전은 Swagger API 표시 버전이다.
+
 ## BAD_COMMIT_SHA에는 정확히 무엇을 넣나요?
 
 `BAD_COMMIT_SHA`는 **되돌릴 변경을 만든 커밋의 SHA를 넣으라는 자리표시자**다. SHA는 커밋마다 붙는 식별 번호다. 정상 상태로 돌아가고 싶은 시점의 커밋을 무조건 선택하는 방식이 아니라, **취소할 변경이 들어 있는 커밋**을 찾는다.

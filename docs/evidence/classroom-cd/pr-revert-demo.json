@@ -1,0 +1,309 @@
+{
+  "date": "2026-11-11",
+  "repository": "MinQDU014/idea-support-server",
+  "scope": "Swagger API display version in example app",
+  "original_pr": 1,
+  "original_change_sha": "86cac508fd4a49bb5158f0453fd14bb4310cefd3",
+  "update_merge_sha": "2d11e007dfa0e821c65c009183d25f660390f236",
+  "revert_pr": 2,
+  "revert_change_sha": "d6738cf6b002c2649566373f983a454a548a96b7",
+  "revert_merge_sha": "61b811088e55146142596ac31788d3546025f5fc",
+  "workflow_runs": [
+    42932294095,
+    42932860652,
+    42933625267,
+    42934053632
+  ],
+  "baseline": {
+    "checked_at": "2026-11-11T09:39:03.962685+09:00",
+    "stage": "baseline",
+    "api_version": "v1.0",
+    "deployment": {
+      "team": "team",
+      "image": "docker.minq.live/team/idea-support-server@sha256:a6a983ca5926d7161419df187781b01d4af88b55465d545064a9e83356fe8b25",
+      "previous": "docker.minq.live/team/idea-support-server@sha256:a56a12ab1f4af0035f3bbe8646a2b9d6f5e0284a4526068a49199e8974bb0562",
+      "revision": "712772366e38daa42d41b2cd83f196280a3b7ea2",
+      "time": 1794322086,
+      "status": "deployed"
+    },
+    "health_checks": [
+      {
+        "prefix": "example",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team1",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team2",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team3",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team4",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team5",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team6",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team7",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team8",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      }
+    ]
+  },
+  "updated": {
+    "checked_at": "2026-11-11T09:43:11.686273+09:00",
+    "stage": "updated-v1.1",
+    "api_version": "v1.1",
+    "deployment": {
+      "team": "team",
+      "image": "docker.minq.live/team/idea-support-server@sha256:e7f006d5919011ef170ec0318cb22c15fd60de53d02a67e6c6c67e770a20bfa2",
+      "previous": "docker.minq.live/team/idea-support-server@sha256:a6a983ca5926d7161419df187781b01d4af88b55465d545064a9e83356fe8b25",
+      "revision": "2d11e007dfa0e821c65c009183d25f660390f236",
+      "time": 1794357747,
+      "status": "deployed"
+    },
+    "health_checks": [
+      {
+        "prefix": "example",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team1",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team2",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team3",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team4",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team5",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team6",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team7",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team8",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      }
+    ]
+  },
+  "reverted": {
+    "checked_at": "2026-11-11T09:52:59.961359+09:00",
+    "stage": "reverted-v1.0",
+    "api_version": "v1.0",
+    "deployment": {
+      "team": "team",
+      "image": "docker.minq.live/team/idea-support-server@sha256:231bd53f691ef1df684e62f83ac8784fcaef813578453dfd78706468fa3cfc51",
+      "previous": "docker.minq.live/team/idea-support-server@sha256:e7f006d5919011ef170ec0318cb22c15fd60de53d02a67e6c6c67e770a20bfa2",
+      "revision": "61b811088e55146142596ac31788d3546025f5fc",
+      "time": 1794358335,
+      "status": "deployed"
+    },
+    "health_checks": [
+      {
+        "prefix": "example",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team1",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team2",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team3",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team4",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team5",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team6",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team7",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      },
+      {
+        "prefix": "team8",
+        "health": {
+          "status": "ok",
+          "database": "up",
+          "aiMode": "mock",
+          "seedReady": true
+        }
+      }
+    ],
+    "registry_tags": {
+      "latest": "sha256:231bd53f691ef1df684e62f83ac8784fcaef813578453dfd78706468fa3cfc51",
+      "dev-61b811088e55146142596ac31788d3546025f5fc": "sha256:231bd53f691ef1df684e62f83ac8784fcaef813578453dfd78706468fa3cfc51"
+    }
+  }
+}
