@@ -34,10 +34,10 @@ EC2와 Lightsail은 서버를 제공하는 상품이고 Compose와 Swarm은 그 
 1. Registry에 이미지가 저장된 것과 앱이 실행된 것을 구분한다.
 2. 강사 터미널에서 팀 이미지 `latest`를 가져와 Compose로 실행한다. DB 연결값·비밀값은 서버에 주입한다.
 3. 팀 URL과 `/common/health`, 컨테이너 로그를 확인한다. DB 데이터가 어디에 보관되는지 확인한다.
-4. 응답에 보이는 버전 등 작은 변경을 dev에 push하고 CI 완료를 확인한다.
+4. dev 기준 실습 브랜치에서 작은 변경을 만들고 base가 dev인 PR을 열어 검사 후 merge한다. 첫 연습은 README 실습 문장 한 줄로 변경·복구와 자동 배포 기록을 확인할 수 있다. skip ci가 없는 커밋으로 진행한다.
 5. 새 이미지를 받아 앱 컨테이너를 교체한다. 단순 Compose 교체 중 짧은 중단이 생길 수 있음을 보여준다.
 6. 잘못된 DB 설정 또는 실패하는 앱 버전을 배포해 로그와 상태로 원인을 찾는다.
-7. GitHub dev의 변경 이력에서 문제를 만든 일반 커밋을 찾고 `git revert`로 취소하는 새 커밋을 만들어 dev에 push한다. 기존 Actions의 검사·이미지 생성·앱 교체·health를 다시 확인하고 실제 기능에서 문제 변경이 취소됐는지 본다. GitHub에서 합친 PR은 해당 PR의 Revert로 복구 PR을 만들어 dev에 merge할 수 있다.
+7. GitHub Pull requests → Closed에서 dev에 합쳐진 실습 PR을 찾고 Revert → 복구 PR의 base dev·반대 diff 확인 → Create pull request → Checks → Merge pull request → Confirm merge 순서로 진행한다. PR 검사와 dev 반영 후 배포를 구분하고, Actions·health·실제 변경 복구를 확인한다. [실제 SHA 예시와 화면별 안내](DEV_ROLLBACK_WEB.md)를 따른다.
 8. 새 Revert 커밋 번호의 태그와 digest를 배포 기록에 남긴다. 이번 주 복구 실습은 Git과 자동 CD로 진행하고 Python 보조 도구·서버 수동 교체를 요구하지 않는다. 코드 복구가 DB 스키마·데이터 복구를 뜻하지는 않는다.
 
 `latest`는 최신 업로드를 찾는 이름으로 계속 쓴다. 실행 버전은 같은 실행의 커밋 태그·digest로 기록한다. Revert 후에는 복구 커밋을 새로 빌드해 새 태그·digest로 배포하므로 예전 이미지의 digest와 같다고 가정하지 않는다.

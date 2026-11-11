@@ -172,3 +172,11 @@
 - Markdown 공백 검사를 통과했다. 앱·workflow는 변경하지 않아 앱 테스트·이미지 빌드·실기기 검사를 반복하지 않는다. 안내·기록만 [skip ci]로 커밋하며 기존 deploy/dev-registry/index.html의 미커밋 포맷 변경은 보존한다.
 
 업데이트 위치: 지정 11주차 Notion의 활동 STEP 2 → 6번, deploy/classroom-cd/README.md의 학생 복구 실습, docs/CD_LEARNING_PLAN.md. 이번 수정은 다음 주 예고를 포함하지 않는다.
+
+## 2026-11-11 실제 SHA 예시·GitHub 웹 Revert 안내 준비
+
+- 사용자 요청에 따라 BAD_COMMIT_SHA의 의미, 실제 전체 SHA·GitHub 링크, 웹 PR Revert부터 dev merge·자동 재배포까지 화면별 자료를 준비한다. 다음 주 예고는 추가하지 않는다.
+- gh로 실제 커밋 fd0e2b707be3c7d768b4ca04dbf7e0129b575f80의 제목·변경 파일을 확인했다. 7자리 fd0e2b7과 전체 40자리의 관계를 설명하며, 해당 문서 커밋은 skip ci가 있는 설명용 예시로만 사용한다. 이를 잘못된 앱 배포라고 꾸미거나 학생에게 이 커밋의 복구를 지시하지 않는다.
+- 현재 예시 저장소의 merged PR을 dev 및 전체 브랜치 기준으로 조회했으나 모두 없었다. 실제 존재하지 않는 복구 PR 번호나 Revert 화면을 만들지 않는다. 학생이 README 실습 문장으로 dev 대상 PR을 먼저 합치는 준비 절차를 포함한다.
+- GitHub 공식 자료로 파일 편집·새 브랜치 제안·Merge·Revert·skip ci 동작을 확인했다. 실제 SHA 화면의 Copy full SHA 버튼을 관찰하고 캡처했다. 브라우저의 clipboard readText는 빈 값이어서 복사 결과를 검증했다고 기록하지 않는다. 실제 전체 SHA는 GitHub API·커밋 URL로 교차 확인했다.
+- docs/DEV_ROLLBACK_WEB.md에 실제 SHA 화면, 출처를 명시한 공식 Revert/Merge 버튼 그림, 클릭 순서·대상 dev·PR 검사와 배포의 차이·완료 기록을 넣었다. 운영 README·학습 계획에서도 이 웹 경로를 주 실습으로 연결한다. Notion 5·6번 갱신과 최종 저장 확인은 이어 수행한다.
