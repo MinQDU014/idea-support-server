@@ -21,6 +21,33 @@
 
 학급 밖의 신뢰하지 않는 팀끼리 사용하는 구성이 아니다. 별도 권한이 필요해지면 token auth 또는 Harbor 같은 관리 기능을 검토한다.
 
+## 학생에게 Registry 계정 전달하기
+
+강사는 Git에서 제외한 백엔드 루트 `team-access.json`에서 **해당 팀의 항목만** 확인해 팀 대표에게 개별 전달한다. 예를 들어 team1에는 `team1.username`과 `team1.password`를 전달한다. team1~team8이 함께 들어 있는 원본 파일을 학생에게 통째로 전달하지 않는다. 공개 강의·예제에는 실제 비밀번호를 넣지 않는다.
+
+학생에게 전달할 안내 예시의 비밀번호는 아래처럼 자리표시자로 표시한다. 실제 전달 때는 발급된 해당 팀 값으로 채운다.
+
+| 항목 | 팀1의 값 |
+| --- | --- |
+| Registry 주소 | `docker.minq.live` |
+| `DEV_REGISTRY_USER` | `team1` (`team-access.json`의 username) |
+| `DEV_REGISTRY_PASSWORD` | 팀1에 발급한 password |
+| `DEV_REGISTRY_NAMESPACE` | `team1` |
+
+팀 저장소의 관리자 한 명이 GitHub 웹에서 다음 순서로 등록한다.
+
+1. 팀 백엔드 저장소 → **Settings → Environments**를 연다.
+2. **dev**를 선택한다. 없으면 **New environment**로 이름 `dev`를 만든다.
+3. **Environment secrets → Add secret**에서 이름 `DEV_REGISTRY_USER`, 값 `team1`을 등록한다.
+4. 같은 위치에 이름 `DEV_REGISTRY_PASSWORD`, 값으로 전달받은 팀1 비밀번호를 등록한다.
+5. **Environment variables**에서 `DEV_REGISTRY_HOST=docker.minq.live`, `DEV_REGISTRY_NAMESPACE=team1`을 등록한다. 다른 팀은 자기 팀 번호를 사용한다. 번호 없는 `team`은 강사 예시 공간이다.
+
+workflow의 `${{ secrets.DEV_REGISTRY_USER }}`와 `${{ secrets.DEV_REGISTRY_PASSWORD }}`는 그대로 둔다. 현재 publish job의 `environment: dev`가 위 비밀값을 읽어 Registry 로그인에 사용한다. 로컬 JSON 파일을 가지고 있는 것만으로 GitHub Secrets가 자동 등록되지는 않는다. 등록 후 GitHub Secrets 화면에서 비밀번호를 다시 읽는 기능은 없으며 필요하면 새 값으로 갱신한다.
+
+실제 CD까지 사용할 때는 [공유 CD의 팀별 Variables/Secrets 표](../classroom-cd/README.md#8팀-사용-방법)에 따라 해당 팀의 `DEV_DEPLOY_TOKEN`과 `DEV_DEPLOY_URL`도 등록한다. 배포 토큰은 별도 로컬 `cd-access.json`의 자기 팀 값이다.
+
+근거: [GitHub 공식 Environment Secrets 등록 안내](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets#creating-secrets-for-an-environment). 이 안내 작업에서는 실제 값을 학생에게 발송하거나 GitHub 권한·비밀값을 변경하지 않았다.
+
 ## 설치와 HTTPS 적용
 
 `cloudformation.yaml`은 서버 한 대·고정 IP·관리용 공개 키·보안 그룹을 생성한다. Ubuntu 24.04와 Docker를 준비한다. 개인 키는 로컬 `.local`에만 보관한다.

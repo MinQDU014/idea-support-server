@@ -201,3 +201,11 @@
 - 실제 배포 화면·PR diff·Revert 생성 화면은 docs/images/dev-rollback/에, 비밀값 없는 원본 검증은 docs/evidence/classroom-cd/pr-revert-demo.json에 저장했다. Notion 최종 화면은 로컬 .local/evidence/week11-real-pr-versions.png다. 원래 준비 문서는 PR Revert로 삭제됐으므로 실제 완료 기록을 문서 커밋에서 다시 만들었다. 문서 커밋은 skip ci로 기록해 앱을 다시 배포하지 않는다.
 
 업데이트 위치: dev의 docs/CD_PR_REVERT_DEMO.md와 docs/DEV_ROLLBACK_WEB.md, deploy/classroom-cd/README.md, 지정 11주차 Notion 활동 STEP 2 → 6번. 현재 실행 앱은 API 표시 버전 v1.0 / 배포 revision 61b8110…이며 후속 문서 커밋 SHA를 앱 배포 버전으로 혼동하지 않는다.
+
+## 2026-11-11 학생별 Registry 계정 전달·Secrets 등록 안내
+
+- DEV_REGISTRY_USER·DEV_REGISTRY_PASSWORD를 학생에게 주는 방법을 질문받아 현재 workflow의 environment dev와 기존 운영 안내, 최근 MD 변경을 읽었다. 로컬 team-access.json의 team1~team8 username·비밀번호 존재와 Git 제외를 확인했으며 실제 비밀번호는 출력하지 않았다.
+- 해당 팀의 username/password만 팀 대표에게 개별 전달하고, 팀 저장소 Settings → Environments → dev → Environment secrets에 두 이름으로 등록하도록 안내했다. 공개 원본 전체 공유를 피하고 workflow의 secrets 표현식은 그대로 사용한다. 팀별 경로를 결정하는 Environment variables의 namespace와 별도 CD 토큰·URL 설정도 연결했다.
+- GitHub 공식 최신 안내로 UI 순서·환경 관리자 권한·secrets 컨텍스트를 확인했다. Registry README에 학생 전달 예시와 웹 등록 절차를 추가했다. 실제 학생 메시지 전송·새 자격 증명 발급·GitHub Secrets 변경·서버 배포는 수행하지 않는다. 기존 HTML 변경은 보존하며 문서만 skip ci로 반영한다.
+
+업데이트 위치: deploy/dev-registry/README.md의 학생 계정 전달 절과 각 학생 팀 저장소 Settings → Environments → dev. 실제 값은 Git 제외된 백엔드 루트 team-access.json에 있다.
