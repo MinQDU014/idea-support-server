@@ -180,3 +180,12 @@
 - 현재 예시 저장소의 merged PR을 dev 및 전체 브랜치 기준으로 조회했으나 모두 없었다. 실제 존재하지 않는 복구 PR 번호나 Revert 화면을 만들지 않는다. 학생이 README 실습 문장으로 dev 대상 PR을 먼저 합치는 준비 절차를 포함한다.
 - GitHub 공식 자료로 파일 편집·새 브랜치 제안·Merge·Revert·skip ci 동작을 확인했다. 실제 SHA 화면의 Copy full SHA 버튼을 관찰하고 캡처했다. 브라우저의 clipboard readText는 빈 값이어서 복사 결과를 검증했다고 기록하지 않는다. 실제 전체 SHA는 GitHub API·커밋 URL로 교차 확인했다.
 - docs/DEV_ROLLBACK_WEB.md에 실제 SHA 화면, 출처를 명시한 공식 Revert/Merge 버튼 그림, 클릭 순서·대상 dev·PR 검사와 배포의 차이·완료 기록을 넣었다. 운영 README·학습 계획에서도 이 웹 경로를 주 실습으로 연결한다. Notion 5·6번 갱신과 최종 저장 확인은 이어 수행한다.
+
+## 2026-11-11 GitHub 웹 복구 강의 반영 완료
+
+- 지정 11주차 Notion 활동 STEP 2의 5번을 GitHub 웹에서 README 실습 문장 추가 → 새 브랜치 제안 → base dev PR → 검사 → merge → 최초 배포 확인 순서로 보강했다. 6번은 BAD_COMMIT_SHA의 뜻·실제 전체 SHA·복사 아이콘 안내와 PR Revert → 복구 PR base dev 확인 → 검사 → merge → Actions → 팀 health 확인으로 바꿨다. SHA를 웹 복구 화면에 입력하는 것으로 설명하지 않는다.
+- 실제 SHA 화면 한 장과 GitHub 공식 Revert/Merge 예시 두 장을 Notion 이미지 블록으로 삽입했다. 각각 번호 확인용 실제 화면과 타 저장소의 공식 버튼 예시임을 캡션으로 구분했다. 세 이미지의 로딩 완료·원본 크기를 확인했다.
+- 새로고침 후 준비 절차·웹 안내가 각각 한 번만 저장됐고 임시 입력과 해당 절의 터미널 복구 명령이 없음을 확인했다. 증거는 로컬 .local/evidence/week11-web-revert.png와 week11-web-revert-sha.png다. 다음 주 예고와 다른 강의 표·본문은 변경하지 않았다.
+- 공유 안내·이미지는 dev의 a372734에 먼저 반영했으며 이 항목으로 최종 검증을 기록한다. 실제 PR 생성·merge·revert, 앱 배포, workflow와 AWS 변경은 실행하지 않았다. 문서 변경만 Git 공백 검사 후 [skip ci]로 반영하고 기존 deploy/dev-registry/index.html의 미커밋 변경을 보존한다.
+
+업데이트 위치: 지정 11주차 Notion 활동 STEP 2 → 5·6번, docs/DEV_ROLLBACK_WEB.md, deploy/classroom-cd/README.md, docs/CD_LEARNING_PLAN.md. 학생은 자기 팀 저장소의 실습 PR을 사용한다.
