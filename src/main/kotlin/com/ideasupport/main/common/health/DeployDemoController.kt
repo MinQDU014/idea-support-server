@@ -18,7 +18,7 @@ class DeployDemoController {
 	fun version(): ResponseEntity<DeployDemoOutDto> {
 		return ResponseEntity.ok().body(
 			DeployDemoOutDto(
-				version = "team-v1",
+				version = "team-v2",
 				pod = System.getenv("HOSTNAME") ?: "local",
 			),
 		)
